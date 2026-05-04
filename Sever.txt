@@ -1,0 +1,10 @@
+ รายการสินค้าในชุด Starter Kit:
+
+1. Raspberry Pi 4 Model B 4GB- Main Board x 1
+2. MakerDisk 32GB Class A2 microSD - Pre-loaded with Raspberry Pi OS x 1
+3. Raspberry Pi Micro HDMI to Standard HDMI Cable (1m) x 1 *สีของสาย HDMI ที่ได้รับ (สีดำ หรือ สีขาว) จะขึ้นอยู่กับสินค้าที่มีอยู่ในสต็อก
+4. Official RPi 15W USB C Power Adaptor (US Plug) x 1 *สีของ Power Adaptor ที่ได้รับ (สีดำ หรือ สีขาว) จะขึ้นอยู่กับสินค้าที่มีอยู่ในสต็อก
+5. เคส ABS (สีดำ) สำหรับ Raspberry Pi 4
+6. พัดลมระบายความร้อน 3V-5V สำหรับ Raspberry Pi พร้อมสกรูยึดพัดลมกับเคส
+7. Heatsink สำหรับ Raspberry Pi 4
+ราคา 5153 [ https://th.cytron.io/p-raspberry-pi-4-4GB-starter-kit ]
