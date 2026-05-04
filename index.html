@@ -6,13 +6,11 @@
     <title>รายการอุปกรณ์โปรเจกต์</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <!-- นำเข้าไลบรารีสำหรับทำ PDF -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
         body { font-family: 'Prompt', sans-serif; }
         .animate-pulse-fast { animation: pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
         @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: .5; } }
-        /* Toast Animation */
         .toast-enter { transform: translateX(100%); opacity: 0; }
         .toast-enter-active { transform: translateX(0); opacity: 1; transition: all 0.3s ease-out; }
         .toast-leave { transform: translateX(0); opacity: 1; }
@@ -21,13 +19,11 @@
 </head>
 <body class="bg-gray-50 text-gray-800 pb-28">
 
-    <!-- Container สำหรับ Toast Notifications -->
     <div id="toast-container" class="fixed top-4 right-4 z-[9999] flex flex-col gap-2"></div>
 
     <div class="max-w-6xl mx-auto px-4 py-8">
         <div class="flex flex-col md:flex-row justify-between items-center mb-8">
             <h1 class="text-3xl font-bold text-blue-600 mb-4 md:mb-0">รายการสั่งซื้ออุปกรณ์ (Hardware Checklist)</h1>
-            <!-- ปุ่ม Export PDF -->
             <button onclick="window.exportPDF()" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg shadow font-medium flex items-center transition-colors">
                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
                 โหลดสรุป PDF
@@ -47,12 +43,43 @@
             <div class="mt-4 flex justify-between items-center">
                 <span class="text-sm text-blue-500 font-medium" id="status-text">🟡 กำลังเชื่อมต่อกับ Firebase...</span>
                 <div class="flex gap-2">
-                    <button id="cancelEditBtn" onclick="window.cancelEdit()" class="hidden bg-gray-400 hover:bg-gray-500 text-white font-medium py-2.5 px-4 rounded-lg transition-colors shadow-sm">
-                        ยกเลิก
-                    </button>
-                    <button id="saveBtn" onclick="window.saveProduct()" class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2.5 px-6 rounded-lg transition-colors shadow-sm">
-                        เพิ่มเข้ารายการ
-                    </button>
+                    <button id="cancelEditBtn" onclick="window.cancelEdit()" class="hidden bg-gray-400 hover:bg-gray-500 text-white font-medium py-2.5 px-4 rounded-lg transition-colors shadow-sm">ยกเลิก</button>
+                    <button id="saveBtn" onclick="window.saveProduct()" class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2.5 px-6 rounded-lg transition-colors shadow-sm">เพิ่มเข้ารายการ</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 🌟 ส่วนใหม่: ข้อมูลบัญชีและระบบคำนวณเงิน 🌟 -->
+        <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 mb-8 flex flex-col md:flex-row gap-6 items-center justify-between">
+            
+            <!-- บัญชีธนาคาร -->
+            <div class="flex items-center gap-4 w-full md:w-1/2 p-4 bg-sky-50 rounded-lg border border-sky-100">
+                <!-- โลโก้กรุงไทย -->
+                <div class="w-14 h-14 bg-white rounded-full flex items-center justify-center shadow-sm p-1">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/ca/Krung_Thai_Bank_logo.svg/512px-Krung_Thai_Bank_logo.svg.png" alt="KTB Logo" class="w-full h-full object-contain">
+                </div>
+                <div>
+                    <div class="font-semibold text-sky-900">ธนาคารกรุงไทย (KTB)</div>
+                    <div class="text-sm text-sky-800">นาย ภูริพงศ์ แก่นกุล</div>
+                    <div class="flex items-center gap-2 mt-1">
+                        <span class="text-lg font-bold text-sky-700 font-mono tracking-wider">198-0-73756-8</span>
+                        <button onclick="window.copyAccount()" class="bg-white hover:bg-sky-100 text-sky-600 border border-sky-200 px-2 py-1 rounded text-xs flex items-center transition-colors shadow-sm" title="คัดลอกเลขบัญชี">
+                            📋 คัดลอก
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- คำนวณหารค่าใช้จ่าย -->
+            <div class="w-full md:w-1/2 bg-red-50 p-4 rounded-lg border border-red-100 flex flex-col items-center justify-center">
+                <div class="text-sm text-red-800 mb-2 font-medium">🧮 คำนวณยอดที่ต้องจ่ายเพิ่ม</div>
+                <div class="flex items-center gap-3">
+                    <span class="text-gray-700">หารกัน</span>
+                    <input type="number" id="splitCount" min="1" value="3" class="w-20 p-1.5 text-center border border-gray-300 rounded focus:ring-2 focus:ring-red-400 focus:outline-none" oninput="window.calculateSplit()">
+                    <span class="text-gray-700">คน</span>
+                </div>
+                <div class="mt-2 text-lg text-gray-800">
+                    ตกคนละ: <span id="splitResult" class="font-bold text-red-600 text-2xl ml-1">0</span> <span class="text-base text-red-600">บาท</span>
                 </div>
             </div>
         </div>
@@ -72,7 +99,7 @@
                 <span>ซื้อไปแล้ว: </span><span id="totalBought" class="font-bold text-green-600">0</span> <span>บาท</span>
             </div>
             <div class="text-xl">
-                <span>ยอดที่ต้องจ่ายเพิ่ม: </span><span id="totalRemaining" class="font-bold text-red-600">0</span> <span>บาท</span>
+                <span>ต้องจ่ายเพิ่ม: </span><span id="totalRemaining" class="font-bold text-red-600">0</span> <span>บาท</span>
             </div>
         </div>
     </div>
@@ -82,10 +109,8 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
         import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-database.js";
 
-        // 🔴 1. วาง Webhook URL ของ Discord ตรงนี้ 🔴
-        const DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/1500865039203041431/tiZa6zBdTbNNDPfTkJX1LWou3rfS51e4dnAOTRwXCLxi5eKQyXWuYENWedh58k27ri0Y";
+        const DISCORD_WEBHOOK_URL = "YOUR_DISCORD_WEBHOOK_URL_HERE";
 
-        // 🔴 2. วาง config ของ Firebase ตรงนี้ 🔴
         const firebaseConfig = {
             apiKey: "AIzaSyAD9BCcPzh_umMQyjLyNlGDLglolN8Hil8",
             authDomain: "web-produtcs.firebaseapp.com",
@@ -102,30 +127,24 @@
         const dbRef = ref(db, 'hardwareProject/products');
 
         let products = [];
-        let editingId = null; // ตัวแปรเก็บสถานะว่ากำลังแก้ของชิ้นไหนอยู่
+        let editingId = null; 
         const productListEl = document.getElementById('productList');
         const statusIndicator = document.getElementById('status-text');
 
-        // 🌟 ระบบ Pop-up Toast Notifications 🌟
         window.showToast = function(message, type = 'success') {
             const container = document.getElementById('toast-container');
             const toast = document.createElement('div');
             const bgColor = type === 'success' ? 'bg-green-500' : type === 'error' ? 'bg-red-500' : 'bg-blue-500';
-            
             toast.className = `${bgColor} text-white px-6 py-3 rounded shadow-lg flex items-center gap-2 toast-enter`;
-            
             const icon = type === 'success' ? '✅' : type === 'error' ? '❌' : 'ℹ️';
             toast.innerHTML = `<span>${icon}</span> <span>${message}</span>`;
-            
             container.appendChild(toast);
             
-            // Trigger animation
             setTimeout(() => {
                 toast.classList.remove('toast-enter');
                 toast.classList.add('toast-enter-active');
             }, 10);
 
-            // Remove after 3 seconds
             setTimeout(() => {
                 toast.classList.replace('toast-enter-active', 'toast-leave');
                 toast.classList.add('toast-leave-active');
@@ -133,7 +152,28 @@
             }, 3000);
         };
 
-        // 🌟 ฟังก์ชันส่งเข้า Discord 🌟
+        // 🌟 ฟังก์ชันคัดลอกเลขบัญชี 🌟
+        window.copyAccount = function() {
+            // ใช้เลขติดกันเพื่อให้แอปธนาคารอ่านง่าย
+            navigator.clipboard.writeText("1980737568").then(() => {
+                window.showToast("คัดลอกเลขบัญชี 198-0-73756-8 แล้ว!", "success");
+            }).catch(err => {
+                window.showToast("ไม่สามารถคัดลอกได้", "error");
+            });
+        }
+
+        // 🌟 ฟังก์ชันคำนวณคนหาร 🌟
+        window.calculateSplit = function() {
+            const remainingText = document.getElementById('totalRemaining').innerText.replace(/,/g, '');
+            const remaining = parseFloat(remainingText) || 0;
+            let splitCount = parseInt(document.getElementById('splitCount').value);
+            
+            if (isNaN(splitCount) || splitCount < 1) splitCount = 1;
+            
+            const perPerson = remaining / splitCount;
+            document.getElementById('splitResult').innerText = perPerson.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+        }
+
         function sendDiscordNotification(action, product) {
             if (!DISCORD_WEBHOOK_URL || DISCORD_WEBHOOK_URL === "YOUR_DISCORD_WEBHOOK_URL_HERE") return;
 
@@ -180,7 +220,6 @@
             fetchImagesDynamically();
         });
 
-        // 🌟 ฟังก์ชัน บันทึก/อัปเดต สินค้า 🌟
         window.saveProduct = function() {
             const name = document.getElementById('newName').value.trim();
             const price = parseFloat(document.getElementById('newPrice').value);
@@ -194,7 +233,6 @@
             }
 
             if (editingId) {
-                // อัปเดตของเก่า
                 const index = products.findIndex(p => p.id === editingId);
                 if (index !== -1) {
                     const oldBoughtStatus = products[index].bought;
@@ -206,7 +244,6 @@
                 }
                 window.cancelEdit();
             } else {
-                // เพิ่มของใหม่
                 const newProduct = { id: Date.now(), name, price, qty, link, bought: false };
                 if (image) newProduct.fixedImage = image;
                 let currentProducts = products || [];
@@ -215,7 +252,6 @@
                 sendDiscordNotification('add', newProduct);
                 window.showToast("เพิ่มอุปกรณ์ใหม่แล้ว", "success");
                 
-                // ล้างฟอร์ม
                 document.getElementById('newName').value = ''; 
                 document.getElementById('newPrice').value = ''; 
                 document.getElementById('newQty').value = '1'; 
@@ -224,7 +260,6 @@
             }
         };
 
-        // 🌟 ดึงข้อมูลมาแก้ไข 🌟
         window.editProduct = function(id) {
             const product = products.find(p => p.id === id);
             if (!product) return;
@@ -259,11 +294,10 @@
             document.getElementById('newImage').value = '';
         }
 
-        // 🌟 ระบบยืนยัน PIN ก่อนลบ 🌟
         window.deleteProduct = function(id) {
             const pin = prompt("🔒 กรุณาใส่รหัสความปลอดภัย 4 หลัก เพื่อลบข้อมูล:");
             
-            if (pin === null) return; // กด Cancel ปล่อยผ่าน
+            if (pin === null) return; 
             
             if (pin === "2548") {
                 const productToDelete = products.find(p => p.id === id);
@@ -299,6 +333,9 @@
             document.getElementById('totalBudget').innerText = totalBudget.toLocaleString();
             document.getElementById('totalBought').innerText = totalBought.toLocaleString();
             document.getElementById('totalRemaining').innerText = (totalBudget - totalBought).toLocaleString();
+            
+            // เรียกฟังก์ชันคำนวณหารอัตโนมัติเมื่อยอดเปลี่ยน
+            window.calculateSplit();
         }
 
         function initRender() {
@@ -376,11 +413,9 @@
             }
         }
 
-        // 🌟 ระบบ Export เป็น PDF 🌟
         window.exportPDF = function() {
             window.showToast("กำลังประมวลผล PDF กรุณารอสักครู่...", "info");
             
-            // สร้างตารางข้อมูลชั่วคราวซ่อนไว้สำหรับพิมพ์
             let tableHTML = `
                 <div id="pdfContent" style="padding: 30px; font-family: 'Prompt', sans-serif;">
                     <h1 style="text-align:center; color:#2563eb; font-size: 24px; margin-bottom: 20px;">สรุปรายการสั่งซื้ออุปกรณ์ IoT (Hardware Checklist)</h1>
@@ -416,6 +451,14 @@
                 `;
             });
 
+            // ดึงจำนวนคนหารไปใส่ใน PDF ด้วย
+            const splitCount = parseInt(document.getElementById('splitCount').value) || 1;
+            const perPerson = (total - bought) / splitCount;
+            let splitHtml = '';
+            if(splitCount > 1 && (total - bought) > 0) {
+                splitHtml = `<p style="color: #4b5563; margin-top: 5px; font-size: 16px;"><strong>ต้องจ่ายเพิ่มตกคนละ (หาร ${splitCount}):</strong> ฿${perPerson.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</p>`;
+            }
+
             tableHTML += `
                         </tbody>
                     </table>
@@ -423,6 +466,7 @@
                         <p><strong>งบประมาณรวมทั้งหมด:</strong> ฿${total.toLocaleString()}</p>
                         <p style="color: #16a34a; margin-top: 5px;"><strong>ยอดที่จ่ายไปแล้ว:</strong> ฿${bought.toLocaleString()}</p>
                         <p style="color: #dc2626; margin-top: 5px;"><strong>ยอดคงเหลือที่ต้องจ่าย:</strong> ฿${(total - bought).toLocaleString()}</p>
+                        ${splitHtml}
                     </div>
                 </div>
             `;
@@ -431,7 +475,6 @@
             tempDiv.innerHTML = tableHTML;
             document.body.appendChild(tempDiv);
 
-            // ใช้ html2pdf ทำการแปลงตารางเป็น PDF
             html2pdf().set({
                 margin: 10,
                 filename: 'Hardware_Checklist_Summary.pdf',
