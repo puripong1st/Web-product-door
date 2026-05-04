@@ -17,7 +17,6 @@
     <div class="max-w-6xl mx-auto px-4 py-8">
         <h1 class="text-3xl font-bold text-center mb-8 text-blue-600">รายการสั่งซื้ออุปกรณ์ (Hardware Checklist)</h1>
         
-        <!-- ส่วนฟอร์มเพิ่มสินค้าใหม่ -->
         <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 mb-8">
             <h2 class="text-lg font-semibold mb-4 text-gray-700">➕ เพิ่มอุปกรณ์ใหม่ (Sync แบบ Real-time)</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -54,13 +53,14 @@
         </div>
     </div>
 
-    <!-- Firebase SDK (ใช้ Type Module) -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
-        // ต้อง Import Database แบบนี้ถึงจะใช้งานได้
         import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-database.js";
 
-        // คอนฟิกที่มีการใส่ databaseURL ครบถ้วน เพื่อแก้ปัญหาหน้าจอขาว
+        // 🔴 1. วาง Webhook URL ของ Discord ตรงนี้ 🔴
+        const DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/1500865039203041431/tiZa6zBdTbNNDPfTkJX1LWou3rfS51e4dnAOTRwXCLxi5eKQyXWuYENWedh58k27ri0Y";
+
+        // 🔴 2. วาง config ของ Firebase ตรงนี้ 🔴
         const firebaseConfig = {
             apiKey: "AIzaSyAD9BCcPzh_umMQyjLyNlGDLglolN8Hil8",
             authDomain: "web-produtcs.firebaseapp.com",
@@ -80,12 +80,47 @@
         const productListEl = document.getElementById('productList');
         const statusIndicator = document.getElementById('status-text');
 
-        // ฟังก์ชันบันทึกขึ้น Firebase
+        // 🌟 ฟังก์ชันสำหรับยิงแจ้งเตือนเข้า Discord 🌟
+        function sendDiscordNotification(action, product) {
+            if (!DISCORD_WEBHOOK_URL || DISCORD_WEBHOOK_URL === "YOUR_DISCORD_WEBHOOK_URL_HERE") return;
+
+            let color = 3447003; // สีฟ้าตั้งต้น
+            let title = "";
+            let description = `**รายการ:** ${product.name}\n**ราคา:** ฿${product.price.toLocaleString()}`;
+
+            if (action === 'add') {
+                color = 5763719; // สีเขียว
+                title = "➕ มีคนเพิ่มอุปกรณ์ใหม่เข้าระบบ";
+                if (product.link && product.link !== "#") description += `\n**ลิงก์:** [คลิกดูที่ร้านค้า](${product.link})`;
+            } else if (action === 'delete') {
+                color = 15548997; // สีแดง
+                title = "🗑️ มีคนลบอุปกรณ์ออกจากระบบ";
+            } else if (action === 'buy') {
+                color = product.bought ? 5763719 : 16705372; // ซื้อแล้วสีเขียว / ยกเลิกสีเหลือง
+                title = product.bought ? "✅ มีคนกดทำรายการซื้ออุปกรณ์แล้ว!" : "⚠️ มีคนกดยกเลิกสถานะการซื้ออุปกรณ์";
+            }
+
+            const payload = {
+                username: "Hardware Bot", // ชื่อบอทที่แสดงใน Discord
+                embeds: [{
+                    title: title,
+                    description: description,
+                    color: color,
+                    timestamp: new Date().toISOString()
+                }]
+            };
+
+            fetch(DISCORD_WEBHOOK_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            }).catch(err => console.error("Discord Webhook Error:", err));
+        }
+
         function syncToFirebase(data) {
             set(dbRef, data);
         }
 
-        // ดึงข้อมูล Real-time ทันทีที่มีคนอัปเดต
         onValue(dbRef, (snapshot) => {
             const data = snapshot.val();
             if (data) {
@@ -93,14 +128,13 @@
                 statusIndicator.innerText = "🟢 เชื่อมต่อกับ Firebase สำเร็จแล้ว (ข้อมูลล่าสุด)";
                 statusIndicator.className = "text-sm text-green-600 font-medium";
             } else {
-                products = []; // ถ้าไม่มีข้อมูลเลย ให้เป็น Array ว่าง
+                products = []; 
                 statusIndicator.innerText = "🟢 เชื่อมต่อสำเร็จ (ยังไม่มีข้อมูลในระบบ)";
             }
             initRender();
             fetchImagesDynamically();
         });
 
-        // ทำให้ฟังก์ชันใน Module ถูกเรียกจาก HTML ได้
         window.addNewProduct = function() {
             const nameInput = document.getElementById('newName');
             const priceInput = document.getElementById('newPrice');
@@ -120,14 +154,21 @@
             let currentProducts = products || [];
             currentProducts.push(newProduct);
             syncToFirebase(currentProducts);
+            
+            // เรียกใช้ Webhook แจ้งเตือนการเพิ่มของ
+            sendDiscordNotification('add', newProduct);
 
             nameInput.value = ''; priceInput.value = ''; linkInput.value = ''; imageInput.value = '';
         };
 
         window.deleteProduct = function(id) {
             if(confirm("ต้องการลบอุปกรณ์นี้ใช่หรือไม่?")) {
+                const productToDelete = products.find(p => p.id === id);
                 const updatedProducts = products.filter(p => p.id !== id);
                 syncToFirebase(updatedProducts);
+                
+                // เรียกใช้ Webhook แจ้งเตือนการลบของ
+                if(productToDelete) sendDiscordNotification('delete', productToDelete);
             }
         };
 
@@ -137,6 +178,9 @@
             if (index !== -1) {
                 updatedProducts[index].bought = !updatedProducts[index].bought;
                 syncToFirebase(updatedProducts); 
+                
+                // เรียกใช้ Webhook แจ้งเตือนการซื้อของ
+                sendDiscordNotification('buy', updatedProducts[index]);
             }
         };
 
