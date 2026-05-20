@@ -3,113 +3,193 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>รายการอุปกรณ์โปรเจกต์</title>
+    <title>รายการอุปกรณ์โปรเจกต์ Premium</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
-        body { font-family: 'Prompt', sans-serif; }
-        .animate-pulse-fast { animation: pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
-        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: .5; } }
-        .toast-enter { transform: translateX(100%); opacity: 0; }
-        .toast-enter-active { transform: translateX(0); opacity: 1; transition: all 0.3s ease-out; }
-        .toast-leave { transform: translateX(0); opacity: 1; }
-        .toast-leave-active { transform: translateX(100%); opacity: 0; transition: all 0.3s ease-in; }
+        body { 
+            font-family: 'Prompt', sans-serif; 
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+        }
+        /* 3D Glass Card Effect & Hover Smooth Smooth */
+        .premium-card {
+            transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.4s cubic-bezier(0.25, 1, 0.5, 1), border-color 0.3s ease;
+            will-change: transform, box-shadow;
+        }
+        @media (min-width: 1024px) {
+            .premium-card:hover {
+                transform: translateY(-6px) scale(1.02);
+                box-shadow: 0 20px 30px -10px rgba(0, 0, 0, 0.08), 0 1px 3px rgba(0, 0, 0, 0.02);
+            }
+        }
+        /* Custom Custom Toggle Animations */
+        .toast-enter { transform: translateY(-20px); opacity: 0; }
+        .toast-active { transform: translateY(0); opacity: 1; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .toast-leave { transform: translateY(-20px) scale(0.9); opacity: 0; transition: all 0.3s ease-in; }
+        
+        /* สไตล์ซ่อน Scrollbar */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
 </head>
-<body class="bg-gray-50 text-gray-800 pb-28">
+<body class="text-gray-800 pb-44 min-h-screen">
 
-    <div id="toast-container" class="fixed top-4 right-4 z-[9999] flex flex-col gap-2"></div>
+    <!-- ท่อนแจ้งเตือนระดับพรีเมียม (Toast) -->
+    <div id="toast-container" class="fixed top-4 left-1/2 -translate-x-1/2 z-[9999] flex flex-col gap-2 w-full max-w-sm px-4"></div>
 
-    <div class="max-w-6xl mx-auto px-4 py-8">
-        <div class="flex flex-col md:flex-row justify-between items-center mb-8">
-            <h1 class="text-3xl font-bold text-blue-600 mb-4 md:mb-0">รายการสั่งซื้ออุปกรณ์ (Hardware Checklist)</h1>
-            <button onclick="window.exportPDF()" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg shadow font-medium flex items-center transition-colors">
-                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-                โหลดสรุป PDF
-            </button>
-        </div>
-        
-        <!-- ส่วนฟอร์มเพิ่ม/แก้ไข สินค้า -->
-        <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 mb-8" id="formSection">
-            <h2 class="text-lg font-semibold mb-4 text-gray-700" id="formTitle">➕ เพิ่มอุปกรณ์ใหม่</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-                <input type="text" id="newName" placeholder="ชื่ออุปกรณ์ *" class="lg:col-span-2 border border-gray-300 p-2.5 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                <input type="number" id="newPrice" placeholder="ราคา/ชิ้น *" class="border border-gray-300 p-2.5 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                <input type="number" id="newQty" placeholder="จำนวน *" value="1" min="1" class="border border-gray-300 p-2.5 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                <input type="text" id="newLink" placeholder="ลิงก์ร้านค้า (ถ้ามี)" class="lg:col-span-2 border border-gray-300 p-2.5 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                <input type="text" id="newImage" placeholder="ลิงก์รูปโดยตรง (ถ้ามี)" class="lg:col-span-3 border border-gray-300 p-2.5 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-            </div>
-            <div class="mt-4 flex justify-between items-center">
-                <span class="text-sm text-blue-500 font-medium" id="status-text">🟡 กำลังเชื่อมต่อกับ Firebase...</span>
-                <div class="flex gap-2">
-                    <button id="cancelEditBtn" onclick="window.cancelEdit()" class="hidden bg-gray-400 hover:bg-gray-500 text-white font-medium py-2.5 px-4 rounded-lg transition-colors shadow-sm">ยกเลิก</button>
-                    <button id="saveBtn" onclick="window.saveProduct()" class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2.5 px-6 rounded-lg transition-colors shadow-sm">เพิ่มเข้ารายการ</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- 🌟 ส่วนใหม่: ข้อมูลบัญชีและระบบคำนวณเงิน 🌟 -->
-        <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 mb-8 flex flex-col md:flex-row gap-6 items-center justify-between">
-            
-            <!-- บัญชีธนาคาร -->
-            <div class="flex items-center gap-4 w-full md:w-1/2 p-4 bg-sky-50 rounded-lg border border-sky-100">
-                <!-- โลโก้กรุงไทย -->
-                <div class="w-14 h-14 bg-white rounded-full flex items-center justify-center shadow-sm p-1">
-                    <img src="https://upload.wikimedia.org/wikipedia/en/thumb/f/f0/Krung_Thai_Bank_logo.svg/250px-Krung_Thai_Bank_logo.svg.png" alt="KTB Logo" class="w-full h-full object-contain">
-                </div>
+    <!-- ส่วนหัว (Header App Bar) -->
+    <div class="sticky top-0 bg-white/80 backdrop-blur-md border-b border-slate-200/80 z-40 py-4 px-4 shadow-sm mb-6">
+        <div class="max-w-6xl mx-auto flex justify-between items-center">
+            <div class="flex items-center gap-2.5">
+                <div class="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-blue-500/30 font-bold text-xl">H</div>
                 <div>
-                    <div class="font-semibold text-sky-900">ธนาคารกรุงไทย (KTB)</div>
-                    <div class="text-sm text-sky-800">นาย ภูริพงศ์ แก่นกุล</div>
-                    <div class="flex items-center gap-2 mt-1">
-                        <span class="text-lg font-bold text-sky-700 font-mono tracking-wider">198-0-73756-8</span>
-                        <button onclick="window.copyAccount()" class="bg-white hover:bg-sky-100 text-sky-600 border border-sky-200 px-2 py-1 rounded text-xs flex items-center transition-colors shadow-sm" title="คัดลอกเลขบัญชี">
+                    <h1 class="text-lg md:text-2xl font-bold bg-gradient-to-r bg-clip-text text-transparent from-slate-900 to-blue-700">Hardware Checklist</h1>
+                    <p class="text-xs text-gray-500 font-medium">ระบบบริหารงบโปรเจกต์ IoT</p>
+                </div>
+            </div>
+            <div class="flex gap-2">
+                <button onclick="window.toggleFormSection()" class="bg-blue-50 hover:bg-blue-100 text-blue-600 px-3.5 py-2 rounded-xl text-sm font-semibold flex items-center transition-all border border-blue-100 shadow-sm md:hidden">
+                    ➕ ฟอร์ม
+                </button>
+                <button onclick="window.exportPDF()" class="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-xl text-sm font-semibold flex items-center transition-all shadow-md shadow-slate-900/10">
+                    📂 ออกรายงาน PDF
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="max-w-6xl mx-auto px-4">
+        
+        <!-- แผงคำนวณเงิน & บัญชี (ปรับโฉมใหม่เป็น Dashboard Widget) -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+            
+            <!-- บัญชีธนาคาร (Widget 1) -->
+            <div class="bg-gradient-to-br from-sky-50 to-indigo-50/40 p-4 rounded-2xl border border-sky-100 shadow-sm flex items-center gap-4 relative overflow-hidden group">
+                <div class="absolute -right-6 -bottom-6 text-sky-200/20 pointer-events-none group-hover:scale-110 transition-transform duration-500">
+                    <svg class="w-32 h-32" fill="currentColor" viewBox="0 0 24 24"><path d="M2 20h20v2H2v-2zm2-2h2v-8H4v8zm5 0h2v-8H9v8zm5 0h2v-8h-2v8zm5 0h2v-8h-2v8zM2 9h20V7L12 2 2 7v2zm10-4.69L17.74 7H6.26L12 4.31z"/></svg>
+                </div>
+                <div class="w-12 h-12 bg-white rounded-xl flex items-center justify-center shadow-md p-1.5 shrink-0 border border-sky-100">
+                    <img src="https://upload.wikimedia.org/wikipedia/en/thumb/f/f0/Krung_Thai_Bank_logo.svg/250px-Krung_Thai_Bank_logo.svg.png" alt="KTB" class="w-full h-full object-contain">
+                </div>
+                <div class="w-full">
+                    <div class="text-xs font-bold text-sky-800 tracking-wide uppercase">ช่องทางรับเงินกองกลาง</div>
+                    <div class="text-sm font-semibold text-slate-800 mt-0.5">นาย ภูริพงศ์ แก่นกุล</div>
+                    <div class="flex items-center justify-between mt-1">
+                        <span class="text-base font-bold text-sky-700 tracking-wider font-mono">198-0-73756-8</span>
+                        <button onclick="window.copyAccount()" class="bg-white hover:bg-sky-600 hover:text-white text-sky-600 font-medium px-2.5 py-1 rounded-lg text-xs transition-all shadow-sm border border-sky-200">
                             📋 คัดลอก
                         </button>
                     </div>
                 </div>
             </div>
-            
-            <!-- คำนวณหารค่าใช้จ่าย -->
-            <div class="w-full md:w-1/2 bg-red-50 p-4 rounded-lg border border-red-100 flex flex-col items-center justify-center">
-                <div class="text-sm text-red-800 mb-2 font-medium">🧮 คำนวณยอดที่ต้องจ่ายเพิ่ม</div>
-                <div class="flex items-center gap-3">
-                    <span class="text-gray-700">หารกัน</span>
-                    <input type="number" id="splitCount" min="1" value="3" class="w-20 p-1.5 text-center border border-gray-300 rounded focus:ring-2 focus:ring-red-400 focus:outline-none" oninput="window.calculateSplit()">
-                    <span class="text-gray-700">คน</span>
+
+            <!-- คำนวณหารค่าใช้จ่าย (Widget 2) -->
+            <div class="bg-gradient-to-br from-rose-50 to-pink-50/30 p-4 rounded-2xl border border-rose-100 shadow-sm flex flex-col justify-between">
+                <div class="flex justify-between items-center">
+                    <span class="text-xs font-bold text-rose-800 tracking-wide uppercase">🧮 แชร์จ่ายค่าอุปกรณ์</span>
+                    <div class="flex items-center gap-1.5 bg-white px-2 py-0.5 rounded-lg border border-rose-200 shadow-sm">
+                        <input type="number" id="splitCount" min="1" value="3" class="w-10 text-center font-bold text-rose-700 focus:outline-none" oninput="window.calculateSplit()">
+                        <span class="text-xs text-gray-500 font-medium">คน</span>
+                    </div>
                 </div>
-                <div class="mt-2 text-lg text-gray-800">
-                    ตกคนละ: <span id="splitResult" class="font-bold text-red-600 text-2xl ml-1">0</span> <span class="text-base text-red-600">บาท</span>
+                <div class="mt-2 flex items-baseline justify-between">
+                    <span class="text-sm text-slate-600">ตกคนละประมาณ:</span>
+                    <div>
+                        <span id="splitResult" class="font-extrabold text-rose-600 text-2xl tracking-tight">0</span>
+                        <span class="text-xs font-semibold text-rose-600 ml-0.5">บาท</span>
+                    </div>
                 </div>
             </div>
+
+            <!-- สถานะสัญญาณ Firebase (Widget 3) -->
+            <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between">
+                <div>
+                    <span class="text-xs font-bold text-gray-400 tracking-wide uppercase block">DATABASE STATUS</span>
+                    <span class="text-sm font-semibold text-amber-500 mt-1 inline-flex items-center gap-2" id="status-text">
+                        <span class="w-2 h-2 rounded-full bg-amber-500 animate-ping"></span> กำลังดึงข้อมูล...
+                    </span>
+                </div>
+                <div class="text-right">
+                    <span class="text-xs text-gray-400 block">อัปเดตแบบ</span>
+                    <span class="text-xs font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded-md">Realtime Sync</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- ฟอร์มเพิ่ม/แก้ไข อุปกรณ์ (ยุบเปิด-ปิดสไตล์โมเดิร์น) -->
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden mb-8 max-h-[0px] transition-all duration-500 ease-in-out md:max-h-none opacity-0 md:opacity-100" id="formSection">
+            <div class="p-5 border-b border-slate-100 bg-slate-50/50 flex justify-between items-center">
+                <h2 class="font-bold text-slate-800 flex items-center gap-2" id="formTitle">➕ เพิ่มรายการอุปกรณ์ใหม่</h2>
+                <button onclick="window.toggleFormSection()" class="text-gray-400 hover:text-gray-600 text-sm md:hidden">💡 ซ่อนฟอร์ม</button>
+            </div>
+            <div class="p-5">
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-4">
+                    <div class="md:col-span-4">
+                        <label class="block text-xs font-bold text-slate-500 mb-1">ชื่ออุปกรณ์ *</label>
+                        <input type="text" id="newName" placeholder="เช่น ESP32-WROOM-32E" class="w-full bg-slate-50 border border-slate-200 p-2.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all font-medium text-sm">
+                    </div>
+                    <div class="md:col-span-2">
+                        <label class="block text-xs font-bold text-slate-500 mb-1">ราคาต่อชิ้น *</label>
+                        <input type="number" id="newPrice" placeholder="บาท" class="w-full bg-slate-50 border border-slate-200 p-2.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all font-medium text-sm">
+                    </div>
+                    <div class="md:col-span-2">
+                        <label class="block text-xs font-bold text-slate-500 mb-1">จำนวน *</label>
+                        <input type="number" id="newQty" value="1" min="1" class="w-full bg-slate-50 border border-slate-200 p-2.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all font-bold text-sm text-center">
+                    </div>
+                    <div class="md:col-span-4">
+                        <label class="block text-xs font-bold text-slate-500 mb-1">ลิงก์ร้านค้า (Shopee/Lazada)</label>
+                        <input type="text" id="newLink" placeholder="วางลิงก์สั่งซื้อที่นี่" class="w-full bg-slate-50 border border-slate-200 p-2.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all text-sm">
+                    </div>
+                    <div class="md:col-span-12">
+                        <label class="block text-xs font-bold text-slate-500 mb-1">ลิงก์รูปภาพตรง (.jpg / .png เพื่อล็อกรูปภาพไว้ไม่ให้เปลี่ยน)</label>
+                        <input type="text" id="newImage" placeholder="https://..." class="w-full bg-slate-50 border border-slate-200 p-2.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all text-sm">
+                    </div>
+                </div>
+                <div class="mt-4 pt-4 border-t border-slate-100 flex justify-end gap-2">
+                    <button id="cancelEditBtn" onclick="window.cancelEdit()" class="hidden bg-slate-100 hover:bg-slate-200 text-slate-600 font-semibold py-2.5 px-5 rounded-xl transition-all text-sm">ยกเลิก</button>
+                    <button id="saveBtn" onclick="window.saveProduct()" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 px-6 rounded-xl transition-all shadow-md shadow-blue-600/10 text-sm">เพิ่มเข้ารายการ</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- หัวข้อแบ่งเซกชันรายการ -->
+        <div class="flex items-center justify-between mb-4">
+            <h2 class="text-base font-bold text-slate-800 flex items-center gap-2">
+                📋 ฮาร์ดแวร์ในระบบบอร์ดน์ <span id="productCount" class="text-xs bg-slate-200 text-slate-700 px-2 py-0.5 rounded-full">0 รายการ</span>
+            </h2>
         </div>
         
-        <div id="productList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            <!-- สินค้าจะถูก Render ที่นี่ -->
+        <!-- รายการสินค้า (Grid Layout) -->
+        <div id="productList" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+            <!-- ข้อมูลสินค้าจะถูกโหลดลงมาสร้างที่นี่ -->
         </div>
     </div>
 
-    <!-- แถบสรุปราคาด้านล่าง -->
-    <div class="fixed bottom-0 left-0 right-0 bg-white shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)] border-t border-gray-200 py-4 px-6 z-50">
-        <div class="max-w-6xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4">
-            <div class="text-lg">
-                <span>ราคารวม: </span><span id="totalBudget" class="font-bold text-gray-800">0</span> <span>บาท</span>
+    <!-- แถบสรุปราคาด้านล่าง (Premium Bottom Bar แบบ iOS App) -->
+    <div class="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md shadow-[0_-8px_30px_rgb(0,0,0,0.06)] border-t border-slate-100/80 py-4 px-4 z-50 rounded-t-3xl">
+        <div class="max-w-6xl mx-auto grid grid-cols-3 gap-2 text-center">
+            <div class="bg-slate-50/80 rounded-xl p-2.5">
+                <span class="text-[10px] md:text-xs font-bold text-gray-400 uppercase tracking-wider block">งบรวมทั้งหมด</span>
+                <span id="totalBudget" class="font-extrabold text-slate-800 text-sm md:text-xl font-mono">0</span> <span class="text-[10px] text-slate-500 font-medium">฿</span>
             </div>
-            <div class="text-lg">
-                <span>ซื้อไปแล้ว: </span><span id="totalBought" class="font-bold text-green-600">0</span> <span>บาท</span>
+            <div class="bg-green-50 rounded-xl p-2.5">
+                <span class="text-[10px] md:text-xs font-bold text-green-500 uppercase tracking-wider block">ซื้อสำเร็จแล้ว</span>
+                <span id="totalBought" class="font-extrabold text-green-600 text-sm md:text-xl font-mono">0</span> <span class="text-[10px] text-green-500 font-medium">฿</span>
             </div>
-            <div class="text-xl">
-                <span>ต้องจ่ายเพิ่ม: </span><span id="totalRemaining" class="font-bold text-red-600">0</span> <span>บาท</span>
+            <div class="bg-rose-50 rounded-xl p-2.5 border border-rose-100">
+                <span class="text-[10px] md:text-xs font-bold text-rose-500 uppercase tracking-wider block">ยอดขาดเหลือ</span>
+                <span id="totalRemaining" class="font-extrabold text-rose-600 text-sm md:text-xl font-mono">0</span> <span class="text-[10px] text-rose-500 font-medium">฿</span>
             </div>
         </div>
     </div>
 
-    <!-- Firebase SDK -->
+    <!-- Firebase System Module -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
         import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-database.js";
 
-        const DISCORD_WEBHOOK_URL = "YOUR_DISCORD_WEBHOOK_URL_HERE";
+        const DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/1500865039203041431/tiZa6zBdTbNNDPfTkJX1LWou3rfS51e4dnAOTRwXCLxi5eKQyXWuYENWedh58k27ri0Y";
 
         const firebaseConfig = {
             apiKey: "AIzaSyAD9BCcPzh_umMQyjLyNlGDLglolN8Hil8",
@@ -128,79 +208,71 @@
 
         let products = [];
         let editingId = null; 
+        let imageFetchController = null;
         const productListEl = document.getElementById('productList');
         const statusIndicator = document.getElementById('status-text');
+
+        // ฟอร์มเปิดซ่อนใน Mobile
+        window.toggleFormSection = function() {
+            const el = document.getElementById('formSection');
+            if(el.classList.contains('max-h-[0px]')) {
+                el.classList.replace('max-h-[0px]', 'max-h-[1000px]');
+                el.classList.replace('opacity-0', 'opacity-100');
+            } else {
+                el.classList.replace('max-h-[1000px]', 'max-h-[0px]');
+                el.classList.replace('opacity-100', 'opacity-0');
+            }
+        }
 
         window.showToast = function(message, type = 'success') {
             const container = document.getElementById('toast-container');
             const toast = document.createElement('div');
-            const bgColor = type === 'success' ? 'bg-green-500' : type === 'error' ? 'bg-red-500' : 'bg-blue-500';
-            toast.className = `${bgColor} text-white px-6 py-3 rounded shadow-lg flex items-center gap-2 toast-enter`;
-            const icon = type === 'success' ? '✅' : type === 'error' ? '❌' : 'ℹ️';
-            toast.innerHTML = `<span>${icon}</span> <span>${message}</span>`;
+            const isTheme = type === 'success' ? 'bg-emerald-600 shadow-emerald-600/10' : type === 'error' ? 'bg-rose-600 shadow-rose-600/10' : 'bg-slate-900';
+            toast.className = `${isTheme} text-white px-5 py-3 rounded-2xl shadow-xl flex items-center justify-between gap-3 text-sm font-medium toast-enter`;
+            toast.innerHTML = `<span>${message}</span><button class="opacity-70 text-xs ml-2">✕</button>`;
             container.appendChild(toast);
             
-            setTimeout(() => {
-                toast.classList.remove('toast-enter');
-                toast.classList.add('toast-enter-active');
-            }, 10);
-
-            setTimeout(() => {
-                toast.classList.replace('toast-enter-active', 'toast-leave');
-                toast.classList.add('toast-leave-active');
-                setTimeout(() => toast.remove(), 300);
-            }, 3000);
+            setTimeout(() => { toast.classList.remove('toast-enter'); toast.classList.add('toast-active'); }, 10);
+            const closeToast = () => {
+                toast.classList.replace('toast-active', 'toast-leave');
+                setTimeout(() => toast.remove(), 400);
+            };
+            toast.onclick = closeToast;
+            setTimeout(closeToast, 3500);
         };
 
-        // 🌟 ฟังก์ชันคัดลอกเลขบัญชี 🌟
         window.copyAccount = function() {
-            // ใช้เลขติดกันเพื่อให้แอปธนาคารอ่านง่าย
             navigator.clipboard.writeText("1980737568").then(() => {
-                window.showToast("คัดลอกเลขบัญชี 198-0-73756-8 แล้ว!", "success");
-            }).catch(err => {
-                window.showToast("ไม่สามารถคัดลอกได้", "error");
-            });
+                window.showToast("📋 คัดลอกเลขบัญชี 198-0-73756-8 ไปยังคลิปบอร์ดแล้ว", "success");
+            }).catch(() => window.showToast("เกิดข้อผิดพลาดในการคัดลอก", "error"));
         }
 
-        // 🌟 ฟังก์ชันคำนวณคนหาร 🌟
         window.calculateSplit = function() {
             const remainingText = document.getElementById('totalRemaining').innerText.replace(/,/g, '');
             const remaining = parseFloat(remainingText) || 0;
-            let splitCount = parseInt(document.getElementById('splitCount').value);
-            
-            if (isNaN(splitCount) || splitCount < 1) splitCount = 1;
-            
-            const perPerson = remaining / splitCount;
-            document.getElementById('splitResult').innerText = perPerson.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+            let splitCount = parseInt(document.getElementById('splitCount').value) || 1;
+            if (splitCount < 1) splitCount = 1;
+            document.getElementById('splitResult').innerText = (remaining / splitCount).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
         }
 
         function sendDiscordNotification(action, product) {
-            if (!DISCORD_WEBHOOK_URL || DISCORD_WEBHOOK_URL === "YOUR_DISCORD_WEBHOOK_URL_HERE") return;
-
+            if (!DISCORD_WEBHOOK_URL || DISCORD_WEBHOOK_URL === "https://discord.com/api/webhooks/1500865039203041431/tiZa6zBdTbNNDPfTkJX1LWou3rfS51e4dnAOTRwXCLxi5eKQyXWuYENWedh58k27ri0Y") return;
             const qty = product.qty || 1;
             const totalPrice = product.price * qty;
-
-            let color = 3447003; 
+            let color = 6559689; 
             let title = "";
             let description = `**รายการ:** ${product.name}\n**จำนวน:** ${qty} ชิ้น\n**ราคารวม:** ฿${totalPrice.toLocaleString()}`;
 
-            if (action === 'add') {
-                color = 5763719; title = "➕ เพิ่มอุปกรณ์ใหม่เข้าระบบ";
-                if (product.link && product.link !== "#") description += `\n**ลิงก์:** [คลิกดูร้านค้า](${product.link})`;
-            } else if (action === 'edit') {
-                color = 16766720; title = "✏️ มีการแก้ไขข้อมูลอุปกรณ์";
-            } else if (action === 'delete') {
-                color = 15548997; title = "🗑️ ลบอุปกรณ์ออกจากระบบ";
-            } else if (action === 'buy') {
-                color = product.bought ? 5763719 : 16705372;
-                title = product.bought ? "✅ ทำรายการซื้ออุปกรณ์แล้ว!" : "⚠️ ยกเลิกสถานะการซื้ออุปกรณ์";
+            if (action === 'add') { color = 2664269; title = "➕ เพิ่มอุปกรณ์ใหม่เข้าระบบ"; }
+            else if (action === 'edit') { color = 16753920; title = "✏️ แก้ไขข้อมูลอุปกรณ์"; }
+            else if (action === 'delete') { color = 14427977; title = "🗑️ ลบอุปกรณ์ออกจากระบบ"; }
+            else if (action === 'status') {
+                const statusName = product.status === 'bought' ? '✅ ซื้อแล้ว' : product.status === 'hold' ? '🟡 พักไว้ก่อน (ยังไม่ซื้อตอนนี้)' : '🔴 ยังไม่ซื้อ';
+                title = `🔄 ปรับเปลี่ยนสถานะเป็น: ${statusName}`;
+                color = product.status === 'bought' ? 2664269 : product.status === 'hold' ? 16753920 : 14427977;
             }
 
-            const payload = {
-                username: "Hardware Bot",
-                embeds: [{ title, description, color, timestamp: new Date().toISOString() }]
-            };
-
+            const payload = { username: "Hardware Bot", embeds: [{ title, description, color, timestamp: new Date().toISOString() }] };
             fetch(DISCORD_WEBHOOK_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }).catch(e => console.log(e));
         }
 
@@ -209,12 +281,20 @@
         onValue(dbRef, (snapshot) => {
             const data = snapshot.val();
             if (data) {
-                products = data;
-                statusIndicator.innerText = "🟢 เชื่อมต่อข้อมูลล่าสุดเรียบร้อย";
-                statusIndicator.className = "text-sm text-green-600 font-medium";
+                const parsedData = Array.isArray(data) ? data : Object.values(data);
+                // Migrate โครงสร้างสถานะเก่า (bought true/false -> เป็น string status)
+                products = parsedData.map(p => {
+                    if (p.status === undefined) {
+                        p.status = p.bought ? 'bought' : 'pending';
+                        delete p.bought;
+                    }
+                    return p;
+                });
+                statusIndicator.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-500"></span> ข้อมูลอัปเดตแล้ว`;
+                statusIndicator.className = "text-xs font-semibold text-emerald-600 inline-flex items-center gap-1.5 bg-emerald-50 px-2 py-0.5 rounded-md";
             } else {
-                products = []; 
-                statusIndicator.innerText = "🟢 เชื่อมต่อสำเร็จ (ไม่มีข้อมูล)";
+                products = [];
+                statusIndicator.innerText = "🟢 ว่างเปล่า";
             }
             initRender();
             fetchImagesDynamically();
@@ -227,30 +307,30 @@
             const link = document.getElementById('newLink').value.trim() || "#";
             const image = document.getElementById('newImage').value.trim();
 
-            if (!name || isNaN(price) || isNaN(qty) || qty < 1) {
-                window.showToast("กรุณากรอกชื่อ, ราคา และจำนวนให้ถูกต้อง", "error");
+            if (!name || isNaN(price) || isNaN(qty)) {
+                window.showToast("กรุณากรอกข้อมูลดาวจันให้ครบถ้วนนะครับ", "error");
                 return;
             }
 
             if (editingId) {
                 const index = products.findIndex(p => p.id === editingId);
                 if (index !== -1) {
-                    const oldBoughtStatus = products[index].bought;
-                    products[index] = { id: editingId, name, price, qty, link, bought: oldBoughtStatus };
+                    const currentStatus = products[index].status || 'pending';
+                    products[index] = { id: editingId, name, price, qty, link, status: currentStatus };
                     if (image) products[index].fixedImage = image;
                     syncToFirebase(products);
                     sendDiscordNotification('edit', products[index]);
-                    window.showToast("อัปเดตข้อมูลเรียบร้อย", "success");
+                    window.showToast("อัปเดตข้อมูลไอเทมเรียบร้อย", "success");
                 }
                 window.cancelEdit();
             } else {
-                const newProduct = { id: Date.now(), name, price, qty, link, bought: false };
+                const newProduct = { id: Date.now(), name, price, qty, link, status: 'pending' };
                 if (image) newProduct.fixedImage = image;
-                let currentProducts = products || [];
+                let currentProducts = [...products];
                 currentProducts.push(newProduct);
                 syncToFirebase(currentProducts);
                 sendDiscordNotification('add', newProduct);
-                window.showToast("เพิ่มอุปกรณ์ใหม่แล้ว", "success");
+                window.showToast("เพิ่มอุปกรณ์เข้าระบบเรียบร้อย", "success");
                 
                 document.getElementById('newName').value = ''; 
                 document.getElementById('newPrice').value = ''; 
@@ -273,18 +353,21 @@
             editingId = id;
             document.getElementById('formTitle').innerText = "✏️ แก้ไขข้อมูลอุปกรณ์";
             document.getElementById('saveBtn').innerText = "บันทึกการแก้ไข";
-            document.getElementById('saveBtn').className = "bg-orange-500 hover:bg-orange-600 text-white font-medium py-2.5 px-6 rounded-lg transition-colors shadow-sm";
+            document.getElementById('saveBtn').className = "bg-amber-500 hover:bg-amber-600 text-white font-semibold py-2.5 px-6 rounded-xl transition-all shadow-sm text-sm";
             document.getElementById('cancelEditBtn').classList.remove('hidden');
 
+            const el = document.getElementById('formSection');
+            el.classList.replace('max-h-[0px]', 'max-h-[1000px]');
+            el.classList.replace('opacity-0', 'opacity-100');
+
             window.scrollTo({ top: 0, behavior: 'smooth' });
-            window.showToast("เข้าสู่โหมดแก้ไข", "info");
         };
 
         window.cancelEdit = function() {
             editingId = null;
-            document.getElementById('formTitle').innerText = "➕ เพิ่มอุปกรณ์ใหม่";
+            document.getElementById('formTitle').innerText = "➕ เพิ่มรายการอุปกรณ์ใหม่";
             document.getElementById('saveBtn').innerText = "เพิ่มเข้ารายการ";
-            document.getElementById('saveBtn').className = "bg-blue-600 hover:bg-blue-700 text-white font-medium py-2.5 px-6 rounded-lg transition-colors shadow-sm";
+            document.getElementById('saveBtn').className = "bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 px-6 rounded-xl transition-all shadow-sm text-sm";
             document.getElementById('cancelEditBtn').classList.add('hidden');
             
             document.getElementById('newName').value = ''; 
@@ -295,90 +378,125 @@
         }
 
         window.deleteProduct = function(id) {
-            const pin = prompt("🔒 กรุณาใส่รหัสความปลอดภัย 4 หลัก เพื่อลบข้อมูล:");
-            
-            if (pin === null) return; 
-            
+            const pin = prompt("🔒 กรุณาใส่รหัสเซฟตี้ 4 หลักเพื่อลบ:");
+            if (pin === null) return;
             if (pin === "2548") {
-                const productToDelete = products.find(p => p.id === id);
-                const updatedProducts = products.filter(p => p.id !== id);
-                syncToFirebase(updatedProducts);
-                if(productToDelete) sendDiscordNotification('delete', productToDelete);
-                window.showToast("ลบอุปกรณ์เรียบร้อย", "success");
+                const item = products.find(p => p.id === id);
+                const updated = products.filter(p => p.id !== id);
+                syncToFirebase(updated);
+                if(item) sendDiscordNotification('delete', item);
+                window.showToast("🗑️ ลบอุปกรณ์เรียบร้อยแล้ว", "success");
             } else {
-                window.showToast("รหัส PIN ไม่ถูกต้อง ไม่สามารถลบได้!", "error");
+                window.showToast("รหัส PIN ไม่ถูกต้อง ยืนยันตัวตนล้มเหลว", "error");
             }
         };
 
-        window.toggleBuy = function(id) {
+        // ฟังก์ชันอัปเดตสถานะแบบ 3 ทิศทาง
+        window.updateStatus = function(id, nextStatus) {
             const updatedProducts = [...products];
             const index = updatedProducts.findIndex(p => p.id === id);
             if (index !== -1) {
-                updatedProducts[index].bought = !updatedProducts[index].bought;
-                syncToFirebase(updatedProducts); 
-                sendDiscordNotification('buy', updatedProducts[index]);
+                updatedProducts[index].status = nextStatus;
+                syncToFirebase(updatedProducts);
+                sendDiscordNotification('status', updatedProducts[index]);
+                window.showToast(`เปลี่ยนสถานะเป็น ${nextStatus === 'bought' ? 'ซื้อแล้ว' : nextStatus === 'hold' ? 'พักไว้ก่อน' : 'ยังไม่ซื้อ'}`);
             }
         };
 
         function updateTotals() {
-            let totalBudget = 0; let totalBought = 0;
-            if(products && products.length > 0) {
-                products.forEach(p => {
-                    const qty = p.qty || 1;
-                    const itemTotal = p.price * qty;
-                    totalBudget += itemTotal;
-                    if (p.bought) totalBought += itemTotal;
-                });
-            }
+            let totalBudget = 0; let totalBought = 0; let totalRemaining = 0;
+            products.forEach(p => {
+                const qty = p.qty || 1;
+                const totalItemPrice = p.price * qty;
+                
+                totalBudget += totalItemPrice; // งบรวมนับทุกอย่าง
+                
+                if (p.status === 'bought') {
+                    totalBought += totalItemPrice;
+                } else if (p.status === 'pending') {
+                    // งบที่ต้องจ่ายเพิ่ม จะคำนวณเฉพาะตัวที่เป็น 'pending' เท่านั้น
+                    // ถ้าสถานะเป็น 'hold' จะไม่ถูกนำมารวมในช่องนี้ (ช่วยในการเลือกตัดงบ)
+                    totalRemaining += totalItemPrice;
+                }
+            });
+
             document.getElementById('totalBudget').innerText = totalBudget.toLocaleString();
             document.getElementById('totalBought').innerText = totalBought.toLocaleString();
-            document.getElementById('totalRemaining').innerText = (totalBudget - totalBought).toLocaleString();
-            
-            // เรียกฟังก์ชันคำนวณหารอัตโนมัติเมื่อยอดเปลี่ยน
+            document.getElementById('totalRemaining').innerText = totalRemaining.toLocaleString();
             window.calculateSplit();
         }
 
         function initRender() {
             productListEl.innerHTML = '';
-            if(!products || products.length === 0) return;
+            document.getElementById('productCount').innerText = `${products.length} รายการ`;
+            
+            if(products.length === 0) {
+                productListEl.innerHTML = `<div class="col-span-full bg-white rounded-2xl p-12 text-center border text-slate-400 font-medium">📭 ยังไม่มีฮาร์ดแวร์ในตะกร้าโปรเจกต์</div>`;
+                updateTotals();
+                return;
+            }
             
             products.forEach(p => {
                 const card = document.createElement('div');
                 card.id = `card-${p.id}`;
-                const isBoughtBg = p.bought ? 'opacity-60 bg-green-50' : '';
                 const qty = p.qty || 1;
                 const totalPrice = p.price * qty;
 
-                card.className = `bg-white rounded-xl shadow-md overflow-hidden border border-gray-100 transition-all duration-300 hover:shadow-lg relative group ${isBoughtBg}`;
-                
+                // ตกแต่งการ์ดแยกตามสถานะ
+                let statusBg = 'bg-white border-slate-200/80';
+                let overlayClass = 'hidden';
+                if (p.status === 'bought') {
+                    statusBg = 'bg-slate-100/70 border-emerald-200 opacity-75';
+                    overlayClass = 'bg-emerald-500/10 border-emerald-500';
+                } else if (p.status === 'hold') {
+                    statusBg = 'bg-slate-100/50 border-amber-200 opacity-65';
+                    overlayClass = 'bg-amber-500/10 border-amber-400';
+                }
+
+                card.className = `premium-card rounded-2xl border shadow-sm overflow-hidden flex flex-col justify-between relative group ${statusBg}`;
                 card.innerHTML = `
-                    <div class="absolute top-2 right-2 z-20 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <button onclick="window.editProduct(${p.id})" class="bg-orange-500 text-white rounded-full w-8 h-8 flex items-center justify-center hover:bg-orange-600 shadow" title="แก้ไข">✏️</button>
-                        <button onclick="window.deleteProduct(${p.id})" class="bg-red-500 text-white rounded-full w-8 h-8 flex items-center justify-center hover:bg-red-600 shadow" title="ลบ">✕</button>
+                    <!-- ปุ่มแก้ไข/ลบด่วน สำหรับมือถือและเดสก์ท็อป -->
+                    <div class="absolute top-2.5 right-2.5 z-20 flex gap-1.5 md:opacity-0 group-hover:opacity-100 transition-all duration-300">
+                        <button onclick="window.editProduct(${p.id})" class="bg-white/90 backdrop-blur-sm text-amber-600 rounded-xl w-8 h-8 flex items-center justify-center hover:bg-amber-500 hover:text-white shadow-sm border border-slate-200/50 transition-all" title="แก้ไข">✏️</button>
+                        <button onclick="window.deleteProduct(${p.id})" class="bg-white/90 backdrop-blur-sm text-rose-600 rounded-xl w-8 h-8 flex items-center justify-center hover:bg-rose-600 hover:text-white shadow-sm border border-slate-200/50 transition-all" title="ลบ">✕</button>
                     </div>
-                    <div class="h-48 overflow-hidden relative bg-white border-b">
-                        <div id="loading-${p.id}" class="w-full h-full flex items-center justify-center animate-pulse-fast bg-gray-100 text-gray-400">กำลังดึงภาพ...</div>
-                        <img id="img-${p.id}" src="" alt="${p.name}" class="w-full h-full object-contain p-2 hidden">
-                        <div id="overlay-${p.id}" class="${p.bought ? '' : 'hidden'} absolute inset-0 bg-green-500 bg-opacity-20 flex items-center justify-center z-10">
-                            <span class="bg-green-600 text-white px-3 py-1 rounded-full text-sm font-semibold shadow">ซื้อแล้ว</span>
+
+                    <!-- ส่วนพื้นที่รูปภาพ -->
+                    <div class="h-44 bg-white relative flex items-center justify-center p-4 border-b border-slate-100 overflow-hidden">
+                        <div id="loading-${p.id}" class="absolute inset-0 bg-slate-50 flex items-center justify-center text-xs text-gray-400 font-medium">กำลังค้นหาภาพ...</div>
+                        <img id="img-${p.id}" src="" alt="${p.name}" class="w-full h-full object-contain hidden transition-transform duration-500 group-hover:scale-105">
+                        
+                        <!-- Overlay บ่งบอกสถานะบนการ์ดรูปภาพ -->
+                        <div class="absolute inset-0 flex items-center justify-center pointer-events-none border-b-2 ${overlayClass}">
+                            ${p.status === 'bought' ? '<span class="bg-emerald-600 text-white font-bold text-xs px-3 py-1 rounded-full shadow-md">✓ ซื้อแล้ว</span>' : p.status === 'hold' ? '<span class="bg-amber-500 text-white font-bold text-xs px-3 py-1 rounded-full shadow-md">💤 พักไว้ก่อน</span>' : ''}
                         </div>
                     </div>
-                    <div class="p-5">
-                        <h3 class="font-semibold text-gray-800 line-clamp-2 h-12 mb-2 leading-tight">${p.name}</h3>
-                        <div class="flex items-end gap-2 mb-4">
-                            <div class="text-xl font-bold text-blue-600">฿${totalPrice.toLocaleString()}</div>
-                            <div class="text-xs text-gray-500 mb-1">(${qty} ชิ้น)</div>
+
+                    <!-- ส่วนข้อมูลดีเทลสินค้า -->
+                    <div class="p-4 flex-grow flex flex-col justify-between">
+                        <div>
+                            <h3 class="font-semibold text-slate-800 text-sm leading-snug line-clamp-2 h-10 mb-1 group-hover:text-blue-600 transition-colors">${p.name}</h3>
+                            <div class="flex items-baseline gap-1">
+                                <span class="text-lg font-extrabold text-slate-900 font-mono">฿${totalPrice.toLocaleString()}</span>
+                                <span class="text-[11px] text-gray-400 font-medium">(${qty} ชิ้น)</span>
+                            </div>
                         </div>
-                        <div class="flex items-center justify-between mt-4 border-t pt-4">
-                            <a href="${p.link}" target="_blank" class="text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 py-2 px-3 rounded font-medium">🛒 ดูร้านค้า</a>
-                            <label class="flex items-center cursor-pointer">
-                                <div class="relative">
-                                    <input type="checkbox" class="sr-only" onchange="window.toggleBuy(${p.id})" ${p.bought ? 'checked' : ''}>
-                                    <div class="block w-10 h-6 rounded-full transition-colors ${p.bought ? 'bg-green-500' : 'bg-gray-300'}"></div>
-                                    <div class="dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition-transform duration-200 shadow-sm ${p.bought ? 'translate-x-4' : ''}"></div>
-                                </div>
-                                <span class="ml-2 text-xs font-medium w-12 text-right ${p.bought ? 'text-green-600' : 'text-gray-500'}">${p.bought ? 'ซื้อแล้ว' : 'ยังไม่ซื้อ'}</span>
-                            </label>
+
+                        <!-- แถบระบบควบคุมจัดการเปลี่ยนสถานะแบบ Premium Segmented Control -->
+                        <div class="mt-4 pt-3 border-t border-slate-100">
+                            <div class="text-[10px] font-bold text-gray-400 mb-1.5 uppercase tracking-wider">อัปเดตสถานะจัดซื้อ</div>
+                            <div class="grid grid-cols-3 bg-slate-100 p-0.5 rounded-xl text-center text-xs font-semibold select-none">
+                                <div onclick="window.updateStatus(${p.id}, 'pending')" class="py-1.5 rounded-lg cursor-pointer transition-all ${p.status === 'pending' ? 'bg-white text-rose-600 shadow-xs ring-1 ring-black/5' : 'text-gray-400 hover:text-gray-600'}">❌ ยัง</div>
+                                <div onclick="window.updateStatus(${p.id}, 'hold')" class="py-1.5 rounded-lg cursor-pointer transition-all ${p.status === 'hold' ? 'bg-white text-amber-500 shadow-xs ring-1 ring-black/5' : 'text-gray-400 hover:text-gray-600'}">💤 พัก</div>
+                                <div onclick="window.updateStatus(${p.id}, 'bought')" class="py-1.5 rounded-lg cursor-pointer transition-all ${p.status === 'bought' ? 'bg-white text-emerald-600 shadow-xs ring-1 ring-black/5' : 'text-gray-400 hover:text-gray-600'}">✓ ได้แล้ว</div>
+                            </div>
+                            
+                            <!-- ปุ่มลิงก์ภายนอก -->
+                            <div class="mt-2.5 flex justify-start">
+                                <a href="${p.link}" target="_blank" class="w-full text-center text-xs font-bold text-slate-600 bg-slate-50 hover:bg-slate-200/70 border border-slate-200 py-2 px-3 rounded-xl transition-all">
+                                    🛒 เปิดลิงก์ร้านค้า
+                                </a>
+                            </div>
                         </div>
                     </div>
                 `;
@@ -388,84 +506,104 @@
         }
 
         async function fetchImagesDynamically() {
+            if (imageFetchController) imageFetchController.abort();
+            imageFetchController = new AbortController();
+            const { signal } = imageFetchController;
+
             if(!products || products.length === 0) return;
+            
             for (const p of products) {
+                if (signal.aborted) return;
+
                 const imgEl = document.getElementById(`img-${p.id}`);
                 const loadingEl = document.getElementById(`loading-${p.id}`);
                 if (!imgEl || !loadingEl) continue;
 
                 if (p.fixedImage) {
                     imgEl.src = p.fixedImage;
-                    imgEl.onload = () => { loadingEl.classList.add('hidden'); imgEl.classList.remove('hidden'); };
+                    imgEl.onload = () => { loadingEl?.classList.add('hidden'); imgEl?.classList.remove('hidden'); };
                     continue; 
                 }
+
                 if (p.link && p.link !== "#") {
                     try {
-                        const response = await fetch(`https://api.microlink.io?url=${encodeURIComponent(p.link)}`);
+                        const response = await fetch(`https://api.microlink.io?url=${encodeURIComponent(p.link)}`, { signal });
                         const data = await response.json();
-                        imgEl.src = (data.status === 'success' && data.data.image && data.data.image.url) ? data.data.image.url : `https://placehold.co/400x300/f1f5f9/64748b?text=No+Image`;
-                    } catch (error) { imgEl.src = `https://placehold.co/400x300/fee2e2/ef4444?text=Error`; }
-                } else { imgEl.src = `https://placehold.co/400x300/f1f5f9/64748b?text=No+Link`; }
+                        if (data.status === 'success' && data.data.image && data.data.image.url) {
+                            imgEl.src = data.data.image.url;
+                        } else {
+                            imgEl.src = `https://placehold.co/400x300/f1f5f9/64748b?text=No+Image`;
+                        }
+                    } catch (error) {
+                        if (error.name === 'AbortError') return;
+                        imgEl.src = `https://placehold.co/400x300/fee2e2/ef4444?text=Error`;
+                    }
+                } else { 
+                    imgEl.src = `https://placehold.co/400x300/f1f5f9/64748b?text=No+Link`; 
+                }
 
-                imgEl.onload = () => { loadingEl.classList.add('hidden'); imgEl.classList.remove('hidden'); };
-                imgEl.onerror = () => { imgEl.src = `https://placehold.co/400x300/f1f5f9/64748b?text=Image+Error`; loadingEl.classList.add('hidden'); imgEl.classList.remove('hidden'); }
-                await new Promise(r => setTimeout(r, 200));
+                imgEl.onload = () => { loadingEl?.classList.add('hidden'); imgEl?.classList.remove('hidden'); };
+                imgEl.onerror = () => { imgEl.src = `https://placehold.co/400x300/f1f5f9/64748b?text=Image+Error`; loadingEl?.classList.add('hidden'); imgEl?.classList.remove('hidden'); }
+                
+                await new Promise(r => setTimeout(r, 120));
             }
         }
 
         window.exportPDF = function() {
-            window.showToast("กำลังประมวลผล PDF กรุณารอสักครู่...", "info");
+            window.showToast("⏳ กำลังเริ่มเตรียมสร้างไฟล์ PDF สรุปรายการ...", "info");
             
             let tableHTML = `
                 <div id="pdfContent" style="padding: 30px; font-family: 'Prompt', sans-serif;">
-                    <h1 style="text-align:center; color:#2563eb; font-size: 24px; margin-bottom: 20px;">สรุปรายการสั่งซื้ออุปกรณ์ IoT (Hardware Checklist)</h1>
-                    <table style="width:100%; border-collapse: collapse; margin-bottom: 30px;">
+                    <h1 style="text-align:center; color:#2563eb; font-size: 22px; margin-bottom: 20px; font-weight: bold;">สรุปรายการสั่งซื้ออุปกรณ์ (Hardware Checklist)</h1>
+                    <table style="width:100%; border-collapse: collapse; margin-bottom: 30px; font-size: 13px;">
                         <thead>
-                            <tr style="background-color: #f3f4f6;">
-                                <th style="border: 1px solid #e5e7eb; padding: 10px; text-align: left;">ชื่อรายการ</th>
-                                <th style="border: 1px solid #e5e7eb; padding: 10px; text-align: center;">จำนวน</th>
-                                <th style="border: 1px solid #e5e7eb; padding: 10px; text-align: right;">ราคา/ชิ้น</th>
-                                <th style="border: 1px solid #e5e7eb; padding: 10px; text-align: right;">รวม</th>
-                                <th style="border: 1px solid #e5e7eb; padding: 10px; text-align: center;">สถานะ</th>
+                            <tr style="background-color: #f8fafc; border-bottom: 2px solid #cbd5e1;">
+                                <th style="padding: 12px 10px; text-align: left;">ชื่อรายการอุปกรณ์</th>
+                                <th style="padding: 12px 10px; text-align: center;">จำนวน</th>
+                                <th style="padding: 12px 10px; text-align: right;">ราคาต่อหน่วย</th>
+                                <th style="padding: 12px 10px; text-align: right;">ราคารวม</th>
+                                <th style="padding: 12px 10px; text-align: center;">สถานะการจัดซื้อ</th>
                             </tr>
                         </thead>
                         <tbody>
             `;
             
-            let total = 0; let bought = 0;
+            let total = 0; let bought = 0; let remaining = 0;
             products.forEach(p => {
                 const qty = p.qty || 1;
                 const sum = p.price * qty;
                 total += sum;
-                if(p.bought) bought += sum;
-                const statusHtml = p.bought ? '<span style="color:#16a34a; font-weight:bold;">ซื้อแล้ว</span>' : '<span style="color:#dc2626;">ยังไม่ซื้อ</span>';
+                
+                let statusText = 'ยังไม่ซื้อ';
+                if(p.status === 'bought') { bought += sum; statusText = 'ซื้อแล้ว'; }
+                else if(p.status === 'hold') { statusText = 'พักไว้ก่อน'; }
+                else { remaining += sum; }
                 
                 tableHTML += `
-                    <tr>
-                        <td style="border: 1px solid #e5e7eb; padding: 10px;">${p.name}</td>
-                        <td style="border: 1px solid #e5e7eb; padding: 10px; text-align: center;">${qty}</td>
-                        <td style="border: 1px solid #e5e7eb; padding: 10px; text-align: right;">฿${p.price.toLocaleString()}</td>
-                        <td style="border: 1px solid #e5e7eb; padding: 10px; text-align: right;">฿${sum.toLocaleString()}</td>
-                        <td style="border: 1px solid #e5e7eb; padding: 10px; text-align: center;">${statusHtml}</td>
+                    <tr style="border-bottom: 1px solid #e2e8f0;">
+                        <td style="padding: 10px;">${p.name}</td>
+                        <td style="padding: 10px; text-align: center;">${qty}</td>
+                        <td style="padding: 10px; text-align: right;">฿${p.price.toLocaleString()}</td>
+                        <td style="padding: 10px; text-align: right;">฿${sum.toLocaleString()}</td>
+                        <td style="padding: 10px; text-align: center; font-weight: bold;">${p.status === 'bought' ? '<span style="color:#10b981;">ซื้อแล้ว</span>' : p.status === 'hold' ? '<span style="color:#f59e0b;">พักไว้ก่อน</span>' : '<span style="color:#f43f5e;">ยังไม่ซื้อ</span>'}</td>
                     </tr>
                 `;
             });
 
-            // ดึงจำนวนคนหารไปใส่ใน PDF ด้วย
             const splitCount = parseInt(document.getElementById('splitCount').value) || 1;
-            const perPerson = (total - bought) / splitCount;
+            const perPerson = remaining / splitCount;
             let splitHtml = '';
-            if(splitCount > 1 && (total - bought) > 0) {
-                splitHtml = `<p style="color: #4b5563; margin-top: 5px; font-size: 16px;"><strong>ต้องจ่ายเพิ่มตกคนละ (หาร ${splitCount}):</strong> ฿${perPerson.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</p>`;
+            if(splitCount > 1 && remaining > 0) {
+                splitHtml = `<p style="color: #475569; margin-top: 4px; font-size: 15px;"><strong>แชร์จ่ายเพิ่มตกคนละ (หาร ${splitCount} คน):</strong> ฿${perPerson.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</p>`;
             }
 
             tableHTML += `
                         </tbody>
                     </table>
-                    <div style="text-align: right; font-size: 18px;">
-                        <p><strong>งบประมาณรวมทั้งหมด:</strong> ฿${total.toLocaleString()}</p>
-                        <p style="color: #16a34a; margin-top: 5px;"><strong>ยอดที่จ่ายไปแล้ว:</strong> ฿${bought.toLocaleString()}</p>
-                        <p style="color: #dc2626; margin-top: 5px;"><strong>ยอดคงเหลือที่ต้องจ่าย:</strong> ฿${(total - bought).toLocaleString()}</p>
+                    <div style="text-align: right; font-size: 16px; border-top: 2px dashed #e2e8f0; padding-top: 15px;">
+                        <p style="margin: 4px 0;"><strong>ราคารวมไอเทมทั้งหมดในลิสต์:</strong> ฿${total.toLocaleString()}</p>
+                        <p style="color: #10b981; margin: 4px 0;"><strong>ยอดเงินที่ชำระไปแล้ว:</strong> ฿${bought.toLocaleString()}</p>
+                        <p style="color: #f43f5e; margin: 4px 0; font-size: 18px;"><strong>ยอดคงเหลือที่ต้องจ่ายเพิ่ม:</strong> ฿${remaining.toLocaleString()}</p>
                         ${splitHtml}
                     </div>
                 </div>
@@ -477,13 +615,13 @@
 
             html2pdf().set({
                 margin: 10,
-                filename: 'Hardware_Checklist_Summary.pdf',
+                filename: 'Hardware_Checklist_Premium_Report.pdf',
                 image: { type: 'jpeg', quality: 0.98 },
-                html2canvas: { scale: 2 },
+                html2canvas: { scale: 2.5, useCORS: true },
                 jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
             }).from(tempDiv).save().then(() => {
                 document.body.removeChild(tempDiv);
-                window.showToast("ดาวน์โหลด PDF สำเร็จแล้ว!", "success");
+                window.showToast("🚀 ส่งออกรายงาน PDF สำเร็จแล้ว!", "success");
             });
         }
     </script>
