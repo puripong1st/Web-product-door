@@ -171,18 +171,23 @@
                 <h3 class="text-xs font-bold text-slate-900 uppercase tracking-wider mb-3" id="formTitle">ลงทะเบียนจัดซื้ออุปกรณ์พัสดุ</h3>
                 <div class="grid grid-cols-1 md:grid-cols-12 gap-3.5">
                     <div class="md:col-span-4">
+                        <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">ชื่ออุปกรณ์ *</label>
                         <input type="text" id="newName" placeholder="ชื่อรายการพัสดุอุปกรณ์ *" class="w-full bg-slate-50 border p-2 rounded-xl text-xs font-medium focus:outline-none">
                     </div>
                     <div class="md:col-span-2">
+                        <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">ราคา/หน่วย *</label>
                         <input type="number" id="newPrice" placeholder="ราคาต่อหน่วย *" class="w-full bg-slate-50 border p-2 rounded-xl text-xs font-semibold focus:outline-none">
                     </div>
                     <div class="md:col-span-2">
+                        <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">จำนวนชิ้น *</label>
                         <input type="number" id="newQty" value="1" min="1" class="w-full bg-slate-50 border p-2 rounded-xl text-xs font-bold text-center focus:outline-none">
                     </div>
                     <div class="md:col-span-4">
+                        <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">ลิงก์ร้านค้าสั่งซื้อ</label>
                         <input type="text" id="newLink" placeholder="ลิงก์สั่งซื้อหน้าเว็ปร้านค้า" class="w-full bg-slate-50 border p-2 rounded-xl text-xs focus:outline-none">
                     </div>
                     <div class="md:col-span-12">
+                        <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">ลิงก์ไฟล์รูปภาพตรง (ถ้ามีเพื่อไม่ให้รูปเปลี่ยนตาม API)</label>
                         <input type="text" id="newImage" placeholder="ลิงก์ไฟล์รูปภาพโดยตรง (Direct Image URL .png / .jpg)" class="w-full bg-slate-50 border p-2 rounded-xl text-xs focus:outline-none">
                     </div>
                 </div>
@@ -418,7 +423,6 @@
             if(!name || isNaN(price)) { window.showToast("กรุณากรอกข้อมูลพัสดุจำเป็นให้ครบถ้วน", true); return; }
 
             if (editingId) {
-                // โหมดแก้ไขอัปเดตไอเทมเดิม
                 const index = products.findIndex(p => p.id === editingId);
                 if (index !== -1) {
                     const currentStatus = products[index].status || 'pending';
@@ -432,7 +436,6 @@
                 }
                 window.cancelEdit();
             } else {
-                // โหมดเพิ่มไอเทมใหม่ปกติ
                 const newP = { id: Date.now(), name, price, qty, link, status: 'pending' };
                 if (image) newP.fixedImage = image;
                 let updatedList = [...products]; updatedList.push(newP);
@@ -445,7 +448,6 @@
             }
         };
 
-        // 🛡️ นำฟังก์ชันควบคุมการแก้ไข (Edit & Cancel) คืนกลับระบบครบถ้วน 
         window.editProduct = function(id) {
             const product = products.find(p => p.id === id);
             if (!product) return;
@@ -514,9 +516,28 @@
                 if(p.status === 'bought') bought += sum;
                 else if(p.status === 'pending') remaining += sum;
 
-                let cardBg = 'bg-white border-slate-200'; let overlay = 'hidden'; let sliderPos = 'translate-x-0';
-                if(p.status === 'bought') { cardBg = 'bg-slate-50 border-emerald-500/20 opacity-85'; sliderPos = 'translate-x-[200%]'; }
-                else if(p.status === 'hold') { cardBg = 'bg-slate-50 border-amber-500/20 opacity-75'; sliderPos = 'translate-x-[100%]'; }
+                // 🌟 แก้ไข: จัดแต่งธีมสีและผูกป้ายสถานะภาษาไทยชัดเจนตามเงื่อนไข (ซื้อแล้ว / ยังไม่ซื้อ / รอก่อนค่อยซื้อ)
+                let cardBg = 'bg-white border-slate-200'; 
+                let overlay = 'hidden'; 
+                let sliderPos = 'translate-x-0';
+                let badgeHtml = '';
+
+                if(p.status === 'bought') { 
+                    cardBg = 'bg-slate-50 border-emerald-500/20 opacity-95'; 
+                    overlay = 'bg-emerald-500/5 border-emerald-500'; 
+                    sliderPos = 'translate-x-[200%]'; 
+                    badgeHtml = '<span class="bg-emerald-600 text-white font-bold text-xs px-3 py-1 rounded-xl shadow-sm border border-emerald-500 tracking-wider">ซื้อแล้ว</span>';
+                } else if(p.status === 'hold') { 
+                    cardBg = 'bg-slate-50 border-amber-500/20 opacity-90'; 
+                    overlay = 'bg-amber-500/5 border-amber-400'; 
+                    sliderPos = 'translate-x-[100%]'; 
+                    badgeHtml = '<span class="bg-amber-500 text-white font-bold text-xs px-3 py-1 rounded-xl shadow-sm border border-amber-400 tracking-wider">รอก่อนค่อยซื้อ</span>';
+                } else {
+                    cardBg = 'bg-white border-slate-200'; 
+                    overlay = 'bg-rose-500/5 border-rose-400'; 
+                    sliderPos = 'translate-x-0'; 
+                    badgeHtml = '<span class="bg-rose-600 text-white font-bold text-xs px-3 py-1 rounded-xl shadow-sm border border-rose-500 tracking-wider">ยังไม่ซื้อ</span>';
+                }
 
                 const card = document.createElement('div');
                 card.className = `premium-card bg-white border rounded-2xl overflow-hidden flex flex-col justify-between relative group ${cardBg}`;
@@ -532,7 +553,10 @@
                             เรียกภาพหน้าร้าน
                         </div>
                         <img id="img-${p.id}" src="" alt="${p.name}" class="w-full h-full object-contain hidden transition-transform duration-700 group-hover:scale-105">
-                        <div class="absolute inset-0 pointer-events-none border-b ${overlay}"></div>
+                        
+                        <div class="absolute inset-0 flex items-center justify-center pointer-events-none border-b-2 ${overlay}">
+                            ${badgeHtml}
+                        </div>
                     </div>
 
                     <div class="p-4 flex-grow flex flex-col justify-between">
@@ -572,7 +596,6 @@
                 const loadEl = document.getElementById(`loading-${p.id}`);
                 if (!imgEl || !loadEl) continue;
 
-                // ตรวจสอบโครงสร้างสิทธิ์ หากมีรูปล็อกฟิกไว้ตรงช่อง กรอกข้อมูล (newImage) ให้แสดงผลทันที
                 if (p.fixedImage) {
                     imgEl.src = p.fixedImage;
                     imgEl.onload = () => { loadEl?.classList.add('hidden'); imgEl?.classList.remove('hidden'); };
@@ -676,7 +699,7 @@
                             </div>
                         </div>
                         <div class="flex justify-between items-center border-t pt-2">
-                            <span class="text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md ${badgeStyle}">${t.status}</span>
+                            <span class="text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md ${badgeStyle}">${t.status === 'done' ? 'สำเร็จ' : t.status === 'doing' ? 'กำลังทำ' : 'รอคิว'}</span>
                             <select onchange="window.updateTaskStatus('${cat}', '${t.id}', this.value)" class="bg-slate-50 border rounded-lg text-[10px] font-bold text-slate-600 p-1">
                                 <option value="pending" ${t.status === 'pending' ? 'selected' : ''}>⏳ ต่อคิว</option>
                                 <option value="doing" ${t.status === 'doing' ? 'selected' : ''}>⚡ ลุยงาน</option>
