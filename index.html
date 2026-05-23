@@ -29,10 +29,8 @@
 </head>
 <body class="text-slate-800 pb-36 min-h-screen">
 
-    <!-- Container สำหรับแสดง Toast Alert -->
     <div id="toast-container" class="fixed top-6 left-1/2 -translate-x-1/2 z-[9999] flex flex-col gap-2.5 w-full max-w-sm px-4"></div>
 
-    <!-- แถบเมนูด้านบน (Sticky Navigation Bar) -->
     <nav class="sticky top-0 bg-white/80 backdrop-blur-xl border-b border-slate-200/60 z-40 py-4 px-4 shadow-2xs">
         <div class="max-w-6xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4">
             <div class="flex items-center gap-3">
@@ -45,7 +43,6 @@
                 </div>
             </div>
             
-            <!-- ตัวเลือกสลับหน้าจอ (Tab Switcher Component) -->
             <div class="flex bg-slate-100 p-1 rounded-xl border border-slate-200/40 w-full sm:w-auto">
                 <button onclick="window.switchTab('dashboard')" id="tab-dashboard" class="flex-1 sm:flex-none px-4 py-2 rounded-lg text-xs font-bold transition-all bg-white text-slate-900 shadow-2xs">
                     ภาพรวมความสำเร็จ
@@ -62,9 +59,6 @@
 
     <div class="max-w-6xl mx-auto px-4 mt-8">
         
-        <!-- ========================================== -->
-        <!-- VIEW 1: PROGRESS DASHBOARD VIEW -->
-        <!-- ========================================== -->
         <div id="view-dashboard" class="block space-y-6">
             <div class="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-2xs space-y-6">
                 <div class="flex justify-between items-center border-b border-slate-100 pb-4">
@@ -75,7 +69,6 @@
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <!-- Web Progress -->
                     <div class="bg-slate-50 p-4 rounded-xl border border-slate-100">
                         <div class="flex justify-between items-center text-xs font-bold mb-2">
                             <span class="text-slate-700 flex items-center gap-2">
@@ -88,7 +81,6 @@
                         </div>
                     </div>
 
-                    <!-- Board/Assembly Progress -->
                     <div class="bg-slate-50 p-4 rounded-xl border border-slate-100">
                         <div class="flex justify-between items-center text-xs font-bold mb-2">
                             <span class="text-slate-700 flex items-center gap-2">
@@ -101,7 +93,6 @@
                         </div>
                     </div>
 
-                    <!-- Document Progress -->
                     <div class="bg-slate-50 p-4 rounded-xl border border-slate-100">
                         <div class="flex justify-between items-center text-xs font-bold mb-2">
                             <span class="text-slate-700 flex items-center gap-2">
@@ -114,7 +105,6 @@
                         </div>
                     </div>
 
-                    <!-- Hardware Purchasing Progress -->
                     <div class="bg-slate-50 p-4 rounded-xl border border-slate-100">
                         <div class="flex justify-between items-center text-xs font-bold mb-2">
                             <span class="text-slate-700 flex items-center gap-2">
@@ -129,7 +119,6 @@
                 </div>
             </div>
 
-            <!-- ทางลัด Quick Actions Panel -->
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <button onclick="window.switchTab('hardware')" class="bg-white border p-5 rounded-xl text-left premium-card hover:border-blue-500/50 group flex justify-between items-center">
                     <div>
@@ -148,12 +137,8 @@
             </div>
         </div>
 
-        <!-- ========================================== -->
-        <!-- VIEW 2: HARDWARE CHECKLIST VIEW -->
-        <!-- ========================================== -->
         <div id="view-hardware" class="hidden space-y-6">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <!-- บัญชีกองกลาง -->
                 <div class="bg-white p-4 rounded-2xl border border-slate-200/80 flex items-center gap-4">
                     <div class="w-10 h-10 bg-slate-50 rounded-xl flex items-center justify-center border shrink-0">
                         <img src="https://upload.wikimedia.org/wikipedia/en/thumb/f/f0/Krung_Thai_Bank_logo.svg/250px-Krung_Thai_Bank_logo.svg.png" alt="KTB" class="w-6 h-6 object-contain">
@@ -167,7 +152,6 @@
                         </div>
                     </div>
                 </div>
-                <!-- ตัวหารค่าใช้จ่าย -->
                 <div class="bg-white p-4 rounded-2xl border border-slate-200/80 flex flex-col justify-between">
                     <div class="flex justify-between items-center">
                         <span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">คำนวณแชร์ยอดค้างจ่าย</span>
@@ -183,9 +167,8 @@
                 </div>
             </div>
 
-            <!-- ฟอร์มเพิ่มไอเทมจัดซื้อ -->
             <div class="bg-white rounded-2xl border p-4 shadow-2xs">
-                <h3 class="text-xs font-bold text-slate-900 uppercase tracking-wider mb-3">ลงทะเบียนจัดซื้ออุปกรณ์พัสดุ</h3>
+                <h3 class="text-xs font-bold text-slate-900 uppercase tracking-wider mb-3" id="formTitle">ลงทะเบียนจัดซื้ออุปกรณ์พัสดุ</h3>
                 <div class="grid grid-cols-1 md:grid-cols-12 gap-3.5">
                     <div class="md:col-span-4">
                         <input type="text" id="newName" placeholder="ชื่อรายการพัสดุอุปกรณ์ *" class="w-full bg-slate-50 border p-2 rounded-xl text-xs font-medium focus:outline-none">
@@ -199,6 +182,9 @@
                     <div class="md:col-span-4">
                         <input type="text" id="newLink" placeholder="ลิงก์สั่งซื้อหน้าเว็ปร้านค้า" class="w-full bg-slate-50 border p-2 rounded-xl text-xs focus:outline-none">
                     </div>
+                    <div class="md:col-span-12">
+                        <input type="text" id="newImage" placeholder="ลิงก์ไฟล์รูปภาพโดยตรง (Direct Image URL .png / .jpg)" class="w-full bg-slate-50 border p-2 rounded-xl text-xs focus:outline-none">
+                    </div>
                 </div>
                 <div class="mt-3 flex justify-end gap-2">
                     <button id="cancelEditBtn" onclick="window.cancelEdit()" class="hidden bg-slate-100 text-slate-600 font-bold py-2 px-4 rounded-xl text-xs">ยกเลิก</button>
@@ -206,15 +192,10 @@
                 </div>
             </div>
 
-            <!-- พื้นที่แสดงตะกร้าสินค้า -->
             <div id="productList" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5"></div>
         </div>
 
-        <!-- ========================================== -->
-        <!-- VIEW 3: TASK WORKSPACE KANBAN VIEW -->
-        <!-- ========================================== -->
         <div id="view-workspace" class="hidden space-y-6">
-            <!-- แผงสั่งกระจายแจกงาน -->
             <div class="bg-white rounded-2xl border p-4 shadow-2xs">
                 <h2 class="text-xs font-bold text-slate-900 uppercase tracking-wider mb-3">ลงทะเบียนสั่งจ่ายภาระงาน</h2>
                 <div class="grid grid-cols-1 md:grid-cols-12 gap-3">
@@ -234,9 +215,7 @@
                 </div>
             </div>
 
-            <!-- บอร์ดแบ่งคอลัมน์คัมบัง 3 สายงาน -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <!-- คอลัมน์เว็บ (ฟิล์ม) -->
                 <div class="bg-slate-100 rounded-2xl p-4 border flex flex-col min-h-[400px]">
                     <div class="flex justify-between items-center border-b border-slate-200 pb-2.5 mb-3">
                         <h3 class="text-xs font-bold text-slate-700 uppercase tracking-widest flex items-center gap-1.5">
@@ -247,7 +226,6 @@
                     <div id="tasks-web-list" class="space-y-3 flex-grow"></div>
                 </div>
 
-                <!-- คอลัมน์บอร์ด (เฮง) -->
                 <div class="bg-slate-100 rounded-2xl p-4 border flex flex-col min-h-[400px]">
                     <div class="flex justify-between items-center border-b border-slate-200 pb-2.5 mb-3">
                         <h3 class="text-xs font-bold text-slate-700 uppercase tracking-widest flex items-center gap-1.5">
@@ -258,7 +236,6 @@
                     <div id="tasks-board-list" class="space-y-3 flex-grow"></div>
                 </div>
 
-                <!-- คอลัมน์เล่ม (ไอซ์) -->
                 <div class="bg-slate-100 rounded-2xl p-4 border flex flex-col min-h-[400px]">
                     <div class="flex justify-between items-center border-b border-slate-200 pb-2.5 mb-3">
                         <h3 class="text-xs font-bold text-slate-700 uppercase tracking-widest flex items-center gap-1.5">
@@ -273,7 +250,6 @@
 
     </div>
 
-    <!-- แถบด็อคสรุปยอดเงินคงที่ด้านล่างหน้าจอ -->
     <div id="budget-dock-bar" class="fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-xl shadow-[0_-10px_35px_rgba(15,23,42,0.05)] border-t border-slate-200/60 py-4 px-4 z-30 rounded-t-2xl block">
         <div class="max-w-6xl mx-auto grid grid-cols-3 gap-3 text-center">
             <div class="bg-slate-50 rounded-xl p-2.5 border">
@@ -291,7 +267,6 @@
         </div>
     </div>
 
-    <!-- แกนควบคุมโปรแกรมระดับ Core Script Engine -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
         import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-database.js";
@@ -316,6 +291,7 @@
         let products = [];
         let taskData = { web: [], board: [], document: [] };
         let editingId = null; 
+        let imageFetchController = null;
 
         // ตารางผูกความสัมพันธ์ของสิทธิ์สมาชิกประเจกต์
         const TEAM_REGISTRY = {
@@ -328,8 +304,8 @@
         function verifyAuthority(pin, strictRole = null) {
             const user = TEAM_REGISTRY[pin];
             if (!user) return null;
-            if (user.role === 'admin') return user; // แอดมินกลางเข้าถึงแก้ไขได้หมดทุกเงื่อนไข
-            if (strictRole && user.role !== strictRole) return null; // ตรวจสอบผู้รับผิดชอบตรงช่องสายงาน
+            if (user.role === 'admin') return user; 
+            if (strictRole && user.role !== strictRole) return null; 
             return user;
         }
 
@@ -401,32 +377,28 @@
             calculateProgressMetrics();
             renderHardwareList();
             renderWorkspaceBoard();
+            fetchImagesDynamically();
         });
 
-        // คำนวณและประมวลผลหลอด Progress Bar ทิศทางความก้าวหน้างาน
         function calculateProgressMetrics() {
-            // 1. งานระบบเว็บ (ฟิล์ม)
             const webTasks = taskData.web;
             const webDone = webTasks.filter(t => t.status === 'done').length;
             const webPct = webTasks.length ? Math.round((webDone / webTasks.length) * 100) : 0;
             document.getElementById('pct-web').innerText = `${webPct}%`;
             document.getElementById('bar-web').style.width = `${webPct}%`;
 
-            // 2. งานบอร์ดและการประกอบ (เฮง)
             const boardTasks = taskData.board;
             const boardDone = boardTasks.filter(t => t.status === 'done').length;
             const boardPct = boardTasks.length ? Math.round((boardDone / boardTasks.length) * 100) : 0;
             document.getElementById('pct-board').innerText = `${boardPct}%`;
             document.getElementById('bar-board').style.width = `${boardPct}%`;
 
-            // 3. งานเล่มรายงาน (ไอซ์)
             const docTasks = taskData.document;
             const docDone = docTasks.filter(t => t.status === 'done').length;
             const docPct = docTasks.length ? Math.round((docDone / docTasks.length) * 100) : 0;
             document.getElementById('pct-doc').innerText = `${docPct}%`;
             document.getElementById('bar-doc').style.width = `${docPct}%`;
 
-            // 4. ฝั่งจัดซื้อวัสดุพัสดุ
             const buyDone = products.filter(p => p.status === 'bought').length;
             const buyPct = products.length ? Math.round((buyDone / products.length) * 100) : 0;
             document.getElementById('pct-buy').innerText = `${buyPct}%`;
@@ -441,22 +413,75 @@
             const price = parseFloat(document.getElementById('newPrice').value);
             const qty = parseInt(document.getElementById('newQty').value) || 1;
             const link = document.getElementById('newLink').value.trim() || "#";
+            const image = document.getElementById('newImage').value.trim();
 
             if(!name || isNaN(price)) { window.showToast("กรุณากรอกข้อมูลพัสดุจำเป็นให้ครบถ้วน", true); return; }
 
-            const newP = { id: Date.now(), name, price, qty, link, status: 'pending' };
-            let updatedList = [...products]; updatedList.push(newP);
+            if (editingId) {
+                // โหมดแก้ไขอัปเดตไอเทมเดิม
+                const index = products.findIndex(p => p.id === editingId);
+                if (index !== -1) {
+                    const currentStatus = products[index].status || 'pending';
+                    products[index] = { id: editingId, name, price, qty, link, status: currentStatus };
+                    if (image) products[index].fixedImage = image;
+                    else delete products[index].fixedImage;
+                    
+                    set(ref(db, 'hardwareProject/products'), products);
+                    triggerDiscordWebhook("📝 แก้ไขข้อมูลคุณสมบัติพัสดุอุปกรณ์", `รายการ: ${name}\nปรับปรุงรายละเอียดเสร็จสิ้น`, 16753920);
+                    window.showToast("อัปเดตข้อมูลอุปกรณ์พัสดุเรียบร้อย");
+                }
+                window.cancelEdit();
+            } else {
+                // โหมดเพิ่มไอเทมใหม่ปกติ
+                const newP = { id: Date.now(), name, price, qty, link, status: 'pending' };
+                if (image) newP.fixedImage = image;
+                let updatedList = [...products]; updatedList.push(newP);
+                
+                set(ref(db, 'hardwareProject/products'), updatedList);
+                triggerDiscordWebhook("🛒 เพิ่มรายการวัสดุเข้าคลังพัสดุใหม่", `รายการ: ${name}\nประเมินงบ: ฿${(price*qty).toLocaleString()}`, 2664269);
+                
+                document.getElementById('newName').value = ''; document.getElementById('newPrice').value = ''; document.getElementById('newQty').value = '1'; document.getElementById('newLink').value = ''; document.getElementById('newImage').value = '';
+                window.showToast("บันทึกข้อมูลอุปกรณ์พัสดุเรียบร้อย");
+            }
+        };
+
+        // 🛡️ นำฟังก์ชันควบคุมการแก้ไข (Edit & Cancel) คืนกลับระบบครบถ้วน 
+        window.editProduct = function(id) {
+            const product = products.find(p => p.id === id);
+            if (!product) return;
+
+            document.getElementById('newName').value = product.name;
+            document.getElementById('newPrice').value = product.price;
+            document.getElementById('newQty').value = product.qty || 1;
+            document.getElementById('newLink').value = product.link === "#" ? "" : product.link;
+            document.getElementById('newImage').value = product.fixedImage || "";
+
+            editingId = id;
+            document.getElementById('formTitle').innerText = "แก้ไขข้อมูลคุณสมบัติพัสดุอุปกรณ์";
+            document.getElementById('saveBtn').innerText = "บันทึกการแก้ไข";
+            document.getElementById('saveBtn').className = "bg-amber-600 hover:bg-amber-700 text-white font-bold py-2 px-4 rounded-xl text-xs transition-all";
+            document.getElementById('cancelEditBtn').classList.remove('hidden');
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        };
+
+        window.cancelEdit = function() {
+            editingId = null;
+            document.getElementById('formTitle').innerText = "ลงทะเบียนจัดซื้ออุปกรณ์พัสดุ";
+            document.getElementById('saveBtn').innerText = "บันทึกพัสดุ";
+            document.getElementById('saveBtn').className = "bg-slate-900 hover:bg-slate-800 text-white font-bold py-2 px-4 rounded-xl text-xs transition-all";
+            document.getElementById('cancelEditBtn').classList.add('hidden');
             
-            set(ref(db, 'hardwareProject/products'), updatedList);
-            triggerDiscordWebhook("🛒 เพิ่มรายการวัสดุเข้าคลังพัสดุใหม่", `รายการ: ${name}\nประเมินงบ: ฿${(price*qty).toLocaleString()}`, 2664269);
-            
-            document.getElementById('newName').value = ''; document.getElementById('newPrice').value = ''; document.getElementById('newQty').value = '1'; document.getElementById('newLink').value = '';
-            window.showToast("บันทึกข้อมูลอุปกรณ์พัสดุเรียบร้อย");
+            document.getElementById('newName').value = ''; 
+            document.getElementById('newPrice').value = ''; 
+            document.getElementById('newQty').value = '1'; 
+            document.getElementById('newLink').value = ''; 
+            document.getElementById('newImage').value = '';
         };
 
         window.updateProductStatus = function(id, nextStatus) {
             const pin = prompt("🔐 ป้อนรหัสสิทธิ์ของคุณ เพื่ออัปเดตสถานะจัดซื้อพัสดุวัตถุนี้:");
-            const user = verifyAuthority(pin); // สมาชิกทุกคนสามารถสลับตรวจของชิ้นนี้ได้
+            const user = verifyAuthority(pin); 
             if(!user) { window.showToast("รหัสตรวจสอบผิดพลาด การจัดสิทธิ์ล้มเหลว", true); return; }
 
             const updated = products.map(p => {
@@ -469,7 +494,7 @@
 
         window.deleteProduct = function(id) {
             const pin = prompt("🚨 กรุณายืนยันรหัสพินส่วนกลาง (รหัสภูริพงศ์) เพื่อลบอุปกรณ์ถาวร:");
-            const user = verifyAuthority(pin, 'admin'); // บังคับให้สิทธิ์แอดมินหรือรหัสคุณพัดลบเท่านั้น
+            const user = verifyAuthority(pin, 'admin'); 
             if(!user) { window.showToast("สิทธิ์การเข้าถึงเพื่อถอดถอนไอเทมถูกปฏิเสธ", true); return; }
 
             const updated = products.filter(p => p.id !== id);
@@ -489,26 +514,41 @@
                 if(p.status === 'bought') bought += sum;
                 else if(p.status === 'pending') remaining += sum;
 
-                let cardBg = 'bg-white border-slate-200'; let sliderPos = 'translate-x-0';
+                let cardBg = 'bg-white border-slate-200'; let overlay = 'hidden'; let sliderPos = 'translate-x-0';
                 if(p.status === 'bought') { cardBg = 'bg-slate-50 border-emerald-500/20 opacity-85'; sliderPos = 'translate-x-[200%]'; }
                 else if(p.status === 'hold') { cardBg = 'bg-slate-50 border-amber-500/20 opacity-75'; sliderPos = 'translate-x-[100%]'; }
 
                 const card = document.createElement('div');
-                card.className = `premium-card bg-white border rounded-2xl p-4 flex flex-col justify-between relative group ${cardBg}`;
+                card.className = `premium-card bg-white border rounded-2xl overflow-hidden flex flex-col justify-between relative group ${cardBg}`;
                 card.innerHTML = `
-                    <button onclick="window.deleteProduct(${p.id})" class="absolute top-2.5 right-2.5 w-6 h-6 border flex items-center justify-center rounded-lg text-slate-300 hover:text-rose-600 bg-white shadow-2xs transition-colors">✕</button>
-                    <div>
-                        <h4 class="font-bold text-slate-900 text-xs leading-snug line-clamp-2 h-9 pr-4">${p.name}</h4>
-                        <div class="mt-1 font-mono text-sm font-bold text-slate-900">฿${sum.toLocaleString()} <span class="text-[10px] text-slate-400 font-medium">/ ${qty} ชิ้น</span></div>
+                    <div class="absolute top-2.5 right-2.5 z-20 flex gap-1.5 md:opacity-0 group-hover:opacity-100 transition-all duration-300">
+                        <button onclick="window.editProduct(${p.id})" class="w-6 h-6 border flex items-center justify-center rounded-lg text-slate-400 hover:text-slate-900 bg-white shadow-2xs transition-colors" title="แก้ไขข้อมูล">✏️</button>
+                        <button onclick="window.deleteProduct(${p.id})" class="w-6 h-6 border flex items-center justify-center rounded-lg text-slate-400 hover:text-rose-600 bg-white shadow-2xs transition-colors" title="ลบพัสดุ">✕</button>
                     </div>
-                    <div class="mt-4 pt-3 border-t">
-                        <div class="relative grid grid-cols-3 bg-slate-100 p-0.5 rounded-xl text-center text-[10px] font-bold h-7 items-center cursor-pointer mb-2">
-                            <div class="status-slider absolute top-0.5 bottom-0.5 left-0.5 w-[32%] bg-white rounded-md shadow-2xs ${sliderPos}"></div>
-                            <div onclick="window.updateProductStatus(${p.id}, 'pending')" class="z-10 text-rose-500 py-1">ยัง</div>
-                            <div onclick="window.updateProductStatus(${p.id}, 'hold')" class="z-10 text-amber-500 py-1">พัก</div>
-                            <div onclick="window.updateProductStatus(${p.id}, 'bought')" class="z-10 text-emerald-600 py-1">คลัง</div>
+                    
+                    <div class="h-36 bg-white relative flex items-center justify-center p-3 border-b border-slate-100 overflow-hidden">
+                        <div id="loading-${p.id}" class="absolute inset-0 bg-slate-50 flex items-center justify-center text-[10px] text-slate-400 font-medium">
+                            <svg class="w-4 h-4 animate-spin text-slate-300 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 1121.21 15H19"/></svg>
+                            เรียกภาพหน้าร้าน
                         </div>
-                        <a href="${p.link}" target="_blank" class="w-full text-center text-[10px] font-bold text-slate-600 bg-slate-50 border py-1.5 rounded-xl block hover:bg-slate-100">หน้าร้านค้า</a>
+                        <img id="img-${p.id}" src="" alt="${p.name}" class="w-full h-full object-contain hidden transition-transform duration-700 group-hover:scale-105">
+                        <div class="absolute inset-0 pointer-events-none border-b ${overlay}"></div>
+                    </div>
+
+                    <div class="p-4 flex-grow flex flex-col justify-between">
+                        <div>
+                            <h4 class="font-bold text-slate-900 text-xs leading-snug line-clamp-2 h-9 pr-4 group-hover:text-blue-600 transition-colors">${p.name}</h4>
+                            <div class="mt-1 font-mono text-sm font-bold text-slate-900">฿${sum.toLocaleString()} <span class="text-[10px] text-slate-400 font-medium">/ ${qty} ชิ้น</span></div>
+                        </div>
+                        <div class="mt-4 pt-3 border-t border-slate-100">
+                            <div class="relative grid grid-cols-3 bg-slate-100 p-0.5 rounded-xl text-center text-[10px] font-bold h-7 items-center cursor-pointer mb-2">
+                                <div class="status-slider absolute top-0.5 bottom-0.5 left-0.5 w-[32%] bg-white rounded-md shadow-2xs ${sliderPos}"></div>
+                                <div onclick="window.updateProductStatus(${p.id}, 'pending')" class="z-10 text-rose-500 py-1">ยัง</div>
+                                <div onclick="window.updateProductStatus(${p.id}, 'hold')" class="z-10 text-amber-500 py-1">พัก</div>
+                                <div onclick="window.updateProductStatus(${p.id}, 'bought')" class="z-10 text-emerald-600 py-1">คลัง</div>
+                            </div>
+                            <a href="${p.link}" target="_blank" class="w-full text-center text-[10px] font-bold text-slate-600 bg-slate-50 border py-1.5 rounded-xl block hover:bg-slate-100 transition-colors">หน้าร้านค้า</a>
+                        </div>
                     </div>
                 `;
                 listEl.appendChild(card);
@@ -520,6 +560,42 @@
             window.calculateSplit();
         }
 
+        async function fetchImagesDynamically() {
+            if (imageFetchController) imageFetchController.abort();
+            imageFetchController = new AbortController(); 
+            const { signal } = imageFetchController;
+
+            if(products.length === 0) return;
+            for (const p of products) {
+                if (signal.aborted) return;
+                const imgEl = document.getElementById(`img-${p.id}`); 
+                const loadEl = document.getElementById(`loading-${p.id}`);
+                if (!imgEl || !loadEl) continue;
+
+                // ตรวจสอบโครงสร้างสิทธิ์ หากมีรูปล็อกฟิกไว้ตรงช่อง กรอกข้อมูล (newImage) ให้แสดงผลทันที
+                if (p.fixedImage) {
+                    imgEl.src = p.fixedImage;
+                    imgEl.onload = () => { loadEl?.classList.add('hidden'); imgEl?.classList.remove('hidden'); };
+                    continue; 
+                }
+
+                if (p.link && p.link !== "#") {
+                    try {
+                        const res = await fetch(`https://api.microlink.io?url=${encodeURIComponent(p.link)}`, { signal }); 
+                        const d = await res.json();
+                        imgEl.src = (d.status === 'success' && d.data.image?.url) ? d.data.image.url : `https://placehold.co/400x300/f1f5f9/64748b?text=No+Image`;
+                    } catch (e) { 
+                        if (e.name === 'AbortError') return; 
+                        imgEl.src = `https://placehold.co/400x300/fee2e2/ef4444?text=Error`; 
+                    }
+                } else { 
+                    imgEl.src = `https://placehold.co/400x300/f1f5f9/64748b?text=No+Link`; 
+                }
+                imgEl.onload = () => { loadEl?.classList.add('hidden'); imgEl?.classList.remove('hidden'); };
+                await new Promise(r => setTimeout(r, 100));
+            }
+        }
+
         // ==========================================
         // LOGIC ENGINE: TASK MANAGEMENT WORKSPACE
         // ==========================================
@@ -529,7 +605,6 @@
 
             if(!title) { window.showToast("กรุณากรอกรายละเอียดเนื้องานที่ต้องการสั่งจ่ายด้วย", true); return; }
 
-            // จับคู่จำแนกแจกแจงผู้ดูแลตามโครงสร้างโจทย์บังคับ
             const asigneeMap = { "web": "ฟิล์ม", "board": "เฮง", "document": "ไอซ์" };
             const newT = { id: 'tk-' + Date.now(), title, assignee: asigneeMap[cat], status: 'pending' };
             
@@ -543,7 +618,6 @@
 
         window.updateTaskStatus = function(category, taskId, nextStatus) {
             const pin = prompt(`🔐 ป้อนรหัส PIN ตนเอง เพื่อเซ็นรับรองสถานะงานชิ้นนี้:`);
-            // ตรวจสอบสิทธิ์แบบระบุเจาะจงให้ตรงสายงานหรือแอดมินกลางเท่านั้น
             const user = verifyAuthority(pin, category); 
             
             if(!user) { 
@@ -566,7 +640,7 @@
 
         window.deleteTask = function(category, taskId) {
             const pin = prompt("🚨 ต้องยืนยันสิทธิ์ของใครคนใดคนหนึ่งในทีมด้วยรหัสพินเพื่อทำการลบภาระงานนี้:");
-            const user = verifyAuthority(pin); // สมาชิกคนไหนก้ได้ในทีมที่มีพินสามารถลบงานขยะทิ้งได้
+            const user = verifyAuthority(pin); 
             
             if(!user) { window.showToast("รหัสรักษาความปลอดภัยไม่ถูกต้อง", true); return; }
 
