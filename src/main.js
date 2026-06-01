@@ -474,31 +474,46 @@ function renderWorkspaceBoard() {
         const taskList = taskData[cat] || [];
 
         if (taskList.length === 0) {
-            container.innerHTML = `<div class="text-center py-8 text-slate-400 text-[11px] font-medium border border-dashed rounded-xl bg-slate-50/50">ยังไม่มีรายการงานสะสม</div>`;
+            container.innerHTML = `<div class="text-center py-10 text-slate-400 text-[11px] font-medium border border-dashed border-slate-200 rounded-2xl bg-slate-50/30 flex flex-col items-center justify-center gap-1.5 shadow-3xs">
+                <span class="text-lg">📭</span>
+                <span>ยังไม่มีรายการงานสะสม</span>
+            </div>`;
             return;
         }
 
         taskList.forEach(t => {
             const block = document.createElement('div');
-            let stateBorder = 'border-slate-200'; let badgeStyle = 'bg-slate-100 text-slate-500';
-            if (t.status === 'doing') { stateBorder = 'border-amber-400/80 shadow-2xs'; badgeStyle = 'bg-amber-50 text-amber-600'; }
-            else if (t.status === 'done') { stateBorder = 'border-emerald-400/40 opacity-75'; badgeStyle = 'bg-emerald-50 text-emerald-600'; }
+            let cardStyle = 'bg-white border-slate-200/80 shadow-3xs'; 
+            let badgeStyle = 'bg-slate-100 text-slate-600 border border-slate-200/60';
+            let badgeText = '⏳ ต่อคิว';
+            
+            if (t.status === 'doing') { 
+                cardStyle = 'bg-gradient-to-br from-amber-50/20 to-white border-amber-300/80 shadow-2xs ring-1 ring-amber-400/10'; 
+                badgeStyle = 'bg-amber-50 text-amber-700 border border-amber-200/50'; 
+                badgeText = '⚡ ลุยงาน';
+            } else if (t.status === 'done') { 
+                cardStyle = 'bg-gradient-to-br from-emerald-50/10 to-white border-emerald-200/60 opacity-90 shadow-3xs'; 
+                badgeStyle = 'bg-emerald-50 text-emerald-700 border border-emerald-200/50'; 
+                badgeText = '✅ สำเร็จ';
+            }
 
-            block.className = `bg-white border rounded-xl p-3 shadow-3xs premium-card flex flex-col justify-between gap-3.5 ${stateBorder}`;
+            block.className = `premium-card rounded-2xl p-4 flex flex-col justify-between gap-4 border transition-all duration-300 hover:shadow-md hover:-translate-y-0.5 ${cardStyle}`;
             block.innerHTML = `
                 <div>
-                    <div class="flex justify-between items-start gap-2">
-                        <h4 class="text-xs font-semibold text-slate-900 leading-tight">${t.title}</h4>
-                        <button onclick="window.deleteTask('${cat}', '${t.id}')" class="text-slate-300 hover:text-rose-500 font-bold text-xs p-0.5">✕</button>
+                    <div class="flex justify-between items-start gap-2.5">
+                        <h4 class="text-xs font-bold text-slate-800 leading-snug tracking-tight">${t.title}</h4>
+                        <button onclick="window.deleteTask('${cat}', '${t.id}')" class="w-5 h-5 flex items-center justify-center rounded-lg text-slate-300 hover:text-rose-600 hover:bg-rose-50/80 transition-all font-medium" title="ลบงาน">✕</button>
                     </div>
                 </div>
-                <div class="flex justify-between items-center border-t pt-2">
-                    <span class="text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md ${badgeStyle}">${t.status === 'done' ? 'สำเร็จ' : t.status === 'doing' ? 'กำลังทำ' : 'รอคิว'}</span>
-                    <select onchange="window.updateTaskStatus('${cat}', '${t.id}', this.value)" class="bg-slate-50 border rounded-lg text-[10px] font-bold text-slate-600 p-1">
-                        <option value="pending" ${t.status === 'pending' ? 'selected' : ''}>⏳ ต่อคิว</option>
-                        <option value="doing" ${t.status === 'doing' ? 'selected' : ''}>⚡ ลุยงาน</option>
-                        <option value="done" ${t.status === 'done' ? 'selected' : ''}>✅ สำเร็จ</option>
-                    </select>
+                <div class="flex justify-between items-center border-t border-slate-100/80 pt-3">
+                    <span class="text-[9px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded-lg ${badgeStyle}">${badgeText}</span>
+                    <div class="relative shrink-0">
+                        <select onchange="window.updateTaskStatus('${cat}', '${t.id}', this.value)" class="bg-slate-50 hover:bg-slate-100 border border-slate-200/80 rounded-lg text-[10px] font-bold text-slate-600 px-2.5 py-1 focus:outline-none transition-all cursor-pointer shadow-3xs hover:border-slate-300">
+                            <option value="pending" ${t.status === 'pending' ? 'selected' : ''}>⏳ ต่อคิว</option>
+                            <option value="doing" ${t.status === 'doing' ? 'selected' : ''}>⚡ ลุยงาน</option>
+                            <option value="done" ${t.status === 'done' ? 'selected' : ''}>✅ สำเร็จ</option>
+                        </select>
+                    </div>
                 </div>
             `;
             container.appendChild(block);
