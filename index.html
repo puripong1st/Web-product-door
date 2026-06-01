@@ -4,38 +4,30 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Project Workspace & Hardware Management Suite</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Prompt Font from Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Script to export to PDF -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-    <style>
-        body { 
-            font-family: 'Prompt', sans-serif; 
-            background: radial-gradient(circle at top left, #f8fafc 0%, #f1f5f9 100%);
-        }
-        .premium-card {
-            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-            will-change: transform, box-shadow;
-        }
-        @media (min-width: 1024px) {
-            .premium-card:hover {
-                transform: translateY(-4px);
-                box-shadow: 0 20px 40px -10px rgba(15, 23, 42, 0.06);
-            }
-        }
-        .status-slider { transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1); }
-        .toast-enter { transform: translateY(-40px) scale(0.95); opacity: 0; }
-        .toast-active { transform: translateY(0) scale(1); opacity: 1; transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
-    </style>
+    
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="/src/style.css">
 </head>
 <body class="text-slate-800 pb-36 min-h-screen">
 
+    <!-- Toast Alerts -->
     <div id="toast-container" class="fixed top-6 left-1/2 -translate-x-1/2 z-[9999] flex flex-col gap-2.5 w-full max-w-sm px-4"></div>
 
-    <nav class="sticky top-0 bg-white/80 backdrop-blur-xl border-b border-slate-200/60 z-40 py-4 px-4 shadow-2xs">
-        <div class="max-w-6xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4">
+    <!-- Navigation Header -->
+    <nav class="sticky top-0 bg-white/80 backdrop-blur-xl border-b border-slate-200/60 z-40 py-4 px-4 shadow-sm">
+        <div class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
             <div class="flex items-center gap-3">
                 <div class="w-10 h-10 bg-slate-900 rounded-xl flex items-center justify-center text-white font-bold">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+                    </svg>
                 </div>
                 <div>
                     <h1 class="text-base font-bold tracking-tight text-slate-900">Project Mission Suite</h1>
@@ -43,24 +35,29 @@
                 </div>
             </div>
             
-            <div class="flex bg-slate-100 p-1 rounded-xl border border-slate-200/40 w-full sm:w-auto">
-                <button onclick="window.switchTab('dashboard')" id="tab-dashboard" class="flex-1 sm:flex-none px-4 py-2 rounded-lg text-xs font-bold transition-all bg-white text-slate-900 shadow-2xs">
+            <div class="flex flex-wrap bg-slate-100 p-1 rounded-xl border border-slate-200/40 w-full md:w-auto">
+                <button onclick="window.switchTab('dashboard')" id="tab-dashboard" class="flex-1 md:flex-none px-3.5 py-2 rounded-lg text-xs font-bold transition-all bg-white text-slate-900 shadow-2xs">
                     ภาพรวมความสำเร็จ
                 </button>
-                <button onclick="window.switchTab('hardware')" id="tab-hardware" class="flex-1 sm:flex-none px-4 py-2 rounded-lg text-xs font-bold transition-all text-slate-400 hover:text-slate-600">
+                <button onclick="window.switchTab('hardware')" id="tab-hardware" class="flex-1 md:flex-none px-3.5 py-2 rounded-lg text-xs font-bold transition-all text-slate-400 hover:text-slate-600">
                     ตะกร้าจัดซื้อพัสดุ
                 </button>
-                <button onclick="window.switchTab('workspace')" id="tab-workspace" class="flex-1 sm:flex-none px-4 py-2 rounded-lg text-xs font-bold transition-all text-slate-400 hover:text-slate-600">
+                <button onclick="window.switchTab('workspace')" id="tab-workspace" class="flex-1 md:flex-none px-3.5 py-2 rounded-lg text-xs font-bold transition-all text-slate-400 hover:text-slate-600">
                     บอร์ดติดตามความคืบหน้า
+                </button>
+                <button onclick="window.switchTab('links')" id="tab-links" class="flex-1 md:flex-none px-3.5 py-2 rounded-lg text-xs font-bold transition-all text-slate-400 hover:text-slate-600">
+                    คลังลิงก์และทรัพยากร
                 </button>
             </div>
         </div>
     </nav>
 
-    <div class="max-w-6xl mx-auto px-4 mt-8">
+    <!-- Main Workspace Container -->
+    <main class="max-w-6xl mx-auto px-4 mt-8">
         
+        <!-- ================= TAB: DASHBOARD ================= -->
         <div id="view-dashboard" class="block space-y-6">
-            <div class="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-2xs space-y-6">
+            <div class="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-xs space-y-6">
                 <div class="flex justify-between items-center border-b border-slate-100 pb-4">
                     <div>
                         <h2 class="text-sm font-bold text-slate-900 uppercase tracking-wider">ดัชนีความก้าวหน้าโครงการ (Project Progress Metrics)</h2>
@@ -119,7 +116,7 @@
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <button onclick="window.switchTab('hardware')" class="bg-white border p-5 rounded-xl text-left premium-card hover:border-blue-500/50 group flex justify-between items-center">
                     <div>
                         <h3 class="font-bold text-slate-900 text-sm group-hover:text-blue-600 transition-colors">จัดการบัญชีและงบพัสดุ</h3>
@@ -129,14 +126,22 @@
                 </button>
                 <button onclick="window.switchTab('workspace')" class="bg-white border p-5 rounded-xl text-left premium-card hover:border-indigo-500/50 group flex justify-between items-center">
                     <div>
-                        <h3 class="font-bold text-slate-900 text-sm group-hover:text-indigo-600 transition-colors">เข้าสู่กระดานบอร์ดติดตามงาน</h3>
+                        <h3 class="font-bold text-slate-900 text-sm group-hover:text-indigo-600 transition-colors">บอร์ดติดตามความคืบหน้า</h3>
                         <p class="text-xs text-slate-400 mt-1">อัปเดตงานของ ฟิล์ม, เฮง, ไอซ์ ด้วยระบบล็อกรหัสพิน</p>
                     </div>
                     <span class="text-slate-300 group-hover:text-indigo-500 transition-colors">→</span>
                 </button>
+                <button onclick="window.switchTab('links')" class="bg-white border p-5 rounded-xl text-left premium-card hover:border-purple-500/50 group flex justify-between items-center">
+                    <div>
+                        <h3 class="font-bold text-slate-900 text-sm group-hover:text-purple-600 transition-colors">คลังลิงก์และทรัพยากรโปรเจกต์</h3>
+                        <p class="text-xs text-slate-400 mt-1">เว็บแอดมิน, ซอร์สโค้ด GitHub, และคลิปสาธิต</p>
+                    </div>
+                    <span class="text-slate-300 group-hover:text-purple-500 transition-colors">→</span>
+                </button>
             </div>
         </div>
 
+        <!-- ================= TAB: HARDWARE BASKET ================= -->
         <div id="view-hardware" class="hidden space-y-6">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div class="bg-white p-4 rounded-2xl border border-slate-200/80 flex items-center gap-4">
@@ -200,6 +205,7 @@
             <div id="productList" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5"></div>
         </div>
 
+        <!-- ================= TAB: WORKSPACE BOARD ================= -->
         <div id="view-workspace" class="hidden space-y-6">
             <div class="bg-white rounded-2xl border p-4 shadow-2xs">
                 <h2 class="text-xs font-bold text-slate-900 uppercase tracking-wider mb-3">ลงทะเบียนสั่งจ่ายภาระงาน</h2>
@@ -221,6 +227,7 @@
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Web Apps Tasks (Film) -->
                 <div class="bg-slate-100 rounded-2xl p-4 border flex flex-col min-h-[400px]">
                     <div class="flex justify-between items-center border-b border-slate-200 pb-2.5 mb-3">
                         <h3 class="text-xs font-bold text-slate-700 uppercase tracking-widest flex items-center gap-1.5">
@@ -231,6 +238,7 @@
                     <div id="tasks-web-list" class="space-y-3 flex-grow"></div>
                 </div>
 
+                <!-- Hardware/Board Tasks (Heng) -->
                 <div class="bg-slate-100 rounded-2xl p-4 border flex flex-col min-h-[400px]">
                     <div class="flex justify-between items-center border-b border-slate-200 pb-2.5 mb-3">
                         <h3 class="text-xs font-bold text-slate-700 uppercase tracking-widest flex items-center gap-1.5">
@@ -241,6 +249,7 @@
                     <div id="tasks-board-list" class="space-y-3 flex-grow"></div>
                 </div>
 
+                <!-- Documents Tasks (Ice) -->
                 <div class="bg-slate-100 rounded-2xl p-4 border flex flex-col min-h-[400px]">
                     <div class="flex justify-between items-center border-b border-slate-200 pb-2.5 mb-3">
                         <h3 class="text-xs font-bold text-slate-700 uppercase tracking-widest flex items-center gap-1.5">
@@ -253,8 +262,228 @@
             </div>
         </div>
 
-    </div>
+        <!-- ================= TAB: PROJECT LINKS (NEW!) ================= -->
+        <div id="view-links" class="hidden space-y-6">
+            
+            <!-- Real-time Github Sync Card -->
+            <div class="bg-slate-900 text-white border border-slate-800 rounded-2xl p-5 shadow-md relative overflow-hidden flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                <div class="absolute -right-16 -top-16 w-44 h-44 bg-slate-800 rounded-full opacity-10 blur-xl pointer-events-none"></div>
+                <div class="flex items-center gap-3.5 z-10">
+                    <div class="w-11 h-11 bg-white/10 rounded-xl flex items-center justify-center text-white font-bold shrink-0 border border-white/5">
+                        <!-- Github Icon -->
+                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path fill-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clip-rule="evenodd"/></svg>
+                    </div>
+                    <div>
+                        <span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest block">คลังซอร์สโค้ดโปรเจกต์ (GitHub)</span>
+                        <a href="https://github.com/puripong1st/Project" target="_blank" class="text-sm font-bold text-white hover:text-blue-400 transition-colors flex items-center gap-1.5">
+                            puripong1st/Project 
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                        </a>
+                    </div>
+                </div>
 
+                <div class="bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-xs flex flex-col sm:items-end gap-1 shrink-0 z-10">
+                    <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider block">อัปเดตล่าสุดผ่านการ Pull (Sync)</span>
+                    <div id="github-commit-info" class="font-medium text-slate-200">
+                        <span class="animate-pulse text-slate-400">กำลังดึงข้อมูล Commit ล่าสุด...</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Group Grid Sections -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                
+                <!-- Section: ระบบเว็บและข้อมูลการเข้าใช้งาน -->
+                <div class="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-2xs space-y-4">
+                    <div class="flex items-center gap-2 border-b border-slate-100 pb-3">
+                        <span class="text-base">🌐</span>
+                        <h3 class="text-xs font-bold text-slate-800 uppercase tracking-wider">ระบบเว็บและข้อมูลการเข้าใช้งาน</h3>
+                    </div>
+                    <div class="space-y-3">
+                        <!-- Admin web -->
+                        <div class="bg-slate-50 border p-4 rounded-xl flex flex-col justify-between gap-2.5">
+                            <div>
+                                <h4 class="text-xs font-bold text-slate-900 leading-snug">เว็บควบคุมระดับผู้ดูแล (Admin Portal)</h4>
+                                <p class="text-[11px] text-slate-400 mt-0.5">ระบบจัดการและยืนยันสิทธิ์เข้าใช้ระบบเบื้องหลัง</p>
+                            </div>
+                            <div class="bg-white border rounded-lg p-2.5 text-[11px] text-slate-500 space-y-1 font-medium">
+                                <div class="flex justify-between"><span>ผู้ใช้งาน (Username):</span> <span class="font-bold text-slate-800 font-mono">admin</span></div>
+                                <div class="flex justify-between"><span>รหัสผ่าน (Password):</span> <span class="font-bold text-slate-800 font-mono">zazoza1234</span></div>
+                            </div>
+                            <a href="https://project-sigma-ivory-21.vercel.app/admin/login" target="_blank" class="w-full text-center text-xs font-bold text-white bg-slate-900 hover:bg-slate-800 py-2 rounded-lg block transition-colors mt-1 shadow-2xs">เปิดเว็บบอร์ดแอดมิน</a>
+                        </div>
+                        
+                        <!-- ESP32 Preview -->
+                        <div class="bg-slate-50 border p-4 rounded-xl flex flex-col justify-between gap-1">
+                            <div>
+                                <h4 class="text-xs font-bold text-slate-900 leading-snug">หน้าจอเช็คสถานะ ESP32 บนเว็บ</h4>
+                                <p class="text-[11px] text-slate-400 mt-0.5">ดูสถานะอุปกรณ์จำลองและตรวจจับความเคลื่อนไหว</p>
+                            </div>
+                            <a href="https://project-sigma-ivory-21.vercel.app/esp32-preview" target="_blank" class="w-full text-center text-xs font-bold text-slate-700 bg-white border hover:bg-slate-50 py-2 rounded-lg block transition-colors mt-2">เปิดหน้าพรีวิว ESP32</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section: บอร์ดทดลองและการดำเนินงาน -->
+                <div class="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-2xs space-y-4">
+                    <div class="flex items-center gap-2 border-b border-slate-100 pb-3">
+                        <span class="text-base">🤖</span>
+                        <h3 class="text-xs font-bold text-slate-800 uppercase tracking-wider">บอร์ดทดลองและการดำเนินงาน</h3>
+                    </div>
+                    <div class="space-y-3">
+                        <!-- Wokwi Simulator -->
+                        <div class="bg-slate-50 border p-4 rounded-xl flex flex-col justify-between gap-1">
+                            <div>
+                                <h4 class="text-xs font-bold text-slate-900 leading-snug">บอร์ดทดลองจำลอง Wokwi (QR Code Scanner)</h4>
+                                <p class="text-[11px] text-slate-400 mt-0.5">จำลองการทำงานจำพวก สแกนรหัสคิวอาร์ และปลดล็อคผ่าน ESP32</p>
+                            </div>
+                            <a href="https://wokwi.com/projects/464968147521473537" target="_blank" class="w-full text-center text-xs font-bold text-white bg-slate-900 hover:bg-slate-800 py-2 rounded-lg block transition-colors mt-2">เปิดบอร์ดจำลองบน Wokwi</a>
+                        </div>
+                        
+                        <!-- Checklist (Placeholder dynamically updated when uploaded) -->
+                        <div class="bg-slate-50 border border-dashed border-slate-300 p-4 rounded-xl flex flex-col justify-between gap-1.5 text-center">
+                            <div>
+                                <h4 class="text-xs font-bold text-slate-400 leading-snug">เช็คลิสต์อุปกรณ์และการดำเนินงาน (Vercel)</h4>
+                                <p class="text-[11px] text-slate-400 mt-0.5">ลิงก์ผลงานจริงของคุณบนคลาวด์ Vercel หลังอัปเดตระบบ</p>
+                            </div>
+                            <div class="inline-flex justify-center items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-100/50 border border-slate-200 text-[10px] text-slate-400 font-bold tracking-wide">
+                                ⏳ รอเผยแพร่งานเข้า Vercel เพื่อสร้างลิงก์ผลลัพธ์
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section: คู่มือและแหล่งข้อมูล -->
+                <div class="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-2xs space-y-4">
+                    <div class="flex items-center gap-2 border-b border-slate-100 pb-3">
+                        <span class="text-base">📝</span>
+                        <h3 class="text-xs font-bold text-slate-800 uppercase tracking-wider">คู่มือและแหล่งข้อมูลการเรียนรู้</h3>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <!-- NotebookLM Workspace -->
+                        <div class="bg-slate-50 border p-3.5 rounded-xl flex flex-col justify-between gap-2.5">
+                            <div>
+                                <h4 class="text-xs font-bold text-slate-900 leading-snug">คลังสมองโครงการ (NotebookLM)</h4>
+                                <p class="text-[10px] text-slate-400 mt-0.5">รวมรวบเอกสารและตอบคำถามฉลาดผ่าน Google AI</p>
+                            </div>
+                            <a href="https://notebooklm.google.com/notebook/792285ac-7e47-411f-bcd3-16ef5c122641" target="_blank" class="w-full text-center text-xs font-bold text-slate-700 bg-white border hover:bg-slate-50 py-1.5 rounded-lg block transition-colors">เปิด NotebookLM</a>
+                        </div>
+                        
+                        <!-- Manual HTML -->
+                        <div class="bg-slate-50 border p-3.5 rounded-xl flex flex-col justify-between gap-2.5">
+                            <div>
+                                <h4 class="text-xs font-bold text-slate-900 leading-snug">คู่มือระบบฉบับสมบูรณ์ (TH)</h4>
+                                <p class="text-[10px] text-slate-400 mt-0.5">เอกสารชี้แจงการติดตั้ง อุปกรณ์และระบบผูกการทำงาน</p>
+                            </div>
+                            <a href="https://project-sigma-ivory-21.vercel.app/complete_system_manual_th.html" target="_blank" class="w-full text-center text-xs font-bold text-slate-700 bg-white border hover:bg-slate-50 py-1.5 rounded-lg block transition-colors">อ่านคู่มือฉบับเต็ม</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section: ช่องทางการแจ้งเตือน -->
+                <div class="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-2xs space-y-4">
+                    <div class="flex items-center gap-2 border-b border-slate-100 pb-3">
+                        <span class="text-base">🔔</span>
+                        <h3 class="text-xs font-bold text-slate-800 uppercase tracking-wider">ช่องทางการติดต่อและแจ้งเตือน</h3>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <!-- Discord -->
+                        <a href="https://discord.gg/gg8AEQmBBc" target="_blank" class="bg-slate-50 hover:bg-indigo-50 border hover:border-indigo-200 p-4 rounded-xl flex items-center gap-3 transition-all duration-300">
+                            <span class="w-10 h-10 bg-indigo-500 rounded-xl flex items-center justify-center text-white text-lg shadow-2xs font-bold shrink-0">💬</span>
+                            <div>
+                                <h4 class="text-xs font-bold text-slate-900">เข้ากลุ่ม Discord</h4>
+                                <p class="text-[10px] text-slate-400 mt-0.5">เช็คการแจ้งเตือน Realtime</p>
+                            </div>
+                        </a>
+                        
+                        <!-- Telegram -->
+                        <a href="https://t.me/+M_x4wiv7kSM4YzM1" target="_blank" class="bg-slate-50 hover:bg-sky-50 border hover:border-sky-200 p-4 rounded-xl flex items-center gap-3 transition-all duration-300">
+                            <span class="w-10 h-10 bg-sky-500 rounded-xl flex items-center justify-center text-white text-lg shadow-2xs font-bold shrink-0">📢</span>
+                            <div>
+                                <h4 class="text-xs font-bold text-slate-900">Telegram Channel</h4>
+                                <p class="text-[10px] text-slate-400 mt-0.5">ช่องทางส่งอัพเดตพัสดุ</p>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Section: ทรัพยากรอื่น ๆ และไฟล์มีเดีย (Other) -->
+                <div class="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-2xs space-y-4 md:col-span-2">
+                    <div class="flex items-center gap-2 border-b border-slate-100 pb-3">
+                        <span class="text-base">📦</span>
+                        <h3 class="text-xs font-bold text-slate-800 uppercase tracking-wider">คลังทรัพยากรดาวน์โหลดอื่น ๆ และไฟล์วิดีโอ</h3>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                        
+                        <!-- Drive Folder: User Pictures -->
+                        <div class="bg-slate-50 border p-4 rounded-xl flex flex-col justify-between gap-3">
+                            <div class="flex items-start gap-2.5">
+                                <span class="text-lg">📁</span>
+                                <div>
+                                    <h4 class="text-xs font-bold text-slate-900 leading-snug">โฟลเดอร์รูปภาพ User</h4>
+                                    <p class="text-[10px] text-slate-400 mt-0.5">รวมรูปหน้าและสแกนสมาชิกสำหรับลงทะเบียน</p>
+                                </div>
+                            </div>
+                            <a href="https://drive.google.com/drive/folders/1Q6R51TekUtUkANKoKev7G8JvoxjUbPMg?usp=drive_link" target="_blank" class="w-full text-center text-[10px] font-bold text-slate-700 bg-white border hover:bg-slate-100 py-1.5 rounded-lg block transition-colors">เข้าสู่ Google Drive</a>
+                        </div>
+
+                        <!-- Drive Folder: Admin Pictures -->
+                        <div class="bg-slate-50 border p-4 rounded-xl flex flex-col justify-between gap-3">
+                            <div class="flex items-start gap-2.5">
+                                <span class="text-lg">📁</span>
+                                <div>
+                                    <h4 class="text-xs font-bold text-slate-900 leading-snug">โฟลเดอร์รูปภาพ Admin</h4>
+                                    <p class="text-[10px] text-slate-400 mt-0.5">รูปภาพประเมินงานและตั้งค่าระดับผู้ดูแลระบบ</p>
+                                </div>
+                            </div>
+                            <a href="https://drive.google.com/drive/folders/18yJBsjmz4EuHfMBtFXWQKKI7k9WbKBhu?usp=drive_link" target="_blank" class="w-full text-center text-[10px] font-bold text-slate-700 bg-white border hover:bg-slate-100 py-1.5 rounded-lg block transition-colors">เข้าสู่ Google Drive</a>
+                        </div>
+
+                        <!-- Drive Folder: PDF Summaries -->
+                        <div class="bg-slate-50 border p-4 rounded-xl flex flex-col justify-between gap-3">
+                            <div class="flex items-start gap-2.5">
+                                <span class="text-lg">📄</span>
+                                <div>
+                                    <h4 class="text-xs font-bold text-slate-900 leading-snug">เอกสาร PDF [NotebookLM สรุป]</h4>
+                                    <p class="text-[10px] text-slate-400 mt-0.5">รายงานวิเคราะห์ระบบ ประมวลผลบทสรุปของโครงการ</p>
+                                </div>
+                            </div>
+                            <a href="https://drive.google.com/drive/folders/1gvOPIvC3e8Y1Q2L4PC7cJ2HDUo8d_pBy?usp=drive_link" target="_blank" class="w-full text-center text-[10px] font-bold text-slate-700 bg-white border hover:bg-slate-100 py-1.5 rounded-lg block transition-colors">เข้าสู่ Google Drive</a>
+                        </div>
+
+                        <!-- NotebookLM Quiz Artifact -->
+                        <div class="bg-slate-50 border p-4 rounded-xl flex flex-col justify-between gap-3">
+                            <div class="flex items-start gap-2.5">
+                                <span class="text-lg">✍️</span>
+                                <div>
+                                    <h4 class="text-xs font-bold text-slate-900 leading-snug">แบบทดสอบประเมินผลโครงการ</h4>
+                                    <p class="text-[10px] text-slate-400 mt-0.5">คิวอาร์โค้ดสากลและข้อสอบจำลองการทำงานบนคลาวด์</p>
+                                </div>
+                            </div>
+                            <a href="https://notebooklm.google.com/notebook/792285ac-7e47-411f-bcd3-16ef5c122641/artifact/8b56d32c-f996-478c-863a-f10bf41c7037?utm_source=nlm_web_share&utm_medium=google_oo&utm_campaign=art_share_2&utm_content=&utm_smc=nlm_web_share_google_oo_art_share_2_" target="_blank" class="w-full text-center text-[10px] font-bold text-slate-700 bg-white border hover:bg-slate-100 py-1.5 rounded-lg block transition-colors">เริ่มทำแบบทดสอบ</a>
+                        </div>
+
+                        <!-- Youtube Playlist -->
+                        <div class="bg-slate-50 border p-4 rounded-xl flex flex-col justify-between gap-3 md:col-span-1 lg:col-span-2">
+                            <div class="flex items-start gap-2.5">
+                                <span class="text-lg">🎥</span>
+                                <div>
+                                    <h4 class="text-xs font-bold text-slate-900 leading-snug">เพลย์ลิสต์วิดีโอรวมการทำงาน (YouTube)</h4>
+                                    <p class="text-[10px] text-slate-400 mt-0.5">คลิปการทดสอบ สแกน QR Code และปลดล็อกประตูไฟฟ้า (ESP32 / Relay / Solenoid Lock)</p>
+                                </div>
+                            </div>
+                            <a href="https://www.youtube.com/playlist?list=PLcWfXDEhq38Mk9p82P3MUdSPrMr0vPtlc" target="_blank" class="w-full text-center text-xs font-bold text-white bg-rose-600 hover:bg-rose-700 py-1.5 rounded-lg block transition-colors shadow-3xs">เปิดดู Playlist บน YouTube</a>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Bottom Budget Status Dock Bar -->
     <div id="budget-dock-bar" class="fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-xl shadow-[0_-10px_35px_rgba(15,23,42,0.05)] border-t border-slate-200/60 py-4 px-4 z-30 rounded-t-2xl block">
         <div class="max-w-6xl mx-auto grid grid-cols-3 gap-3 text-center">
             <div class="bg-slate-50 rounded-xl p-2.5 border">
@@ -272,445 +501,7 @@
         </div>
     </div>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
-        import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-database.js";
-
-        const DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/1500865039203041431/tiZa6zBdTbNNDPfTkJX1LWou3rfS51e4dnAOTRwXCLxi5eKQyXWuYENWedh58k27ri0Y";
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyAD9BCcPzh_umMQyjLyNlGDLglolN8Hil8",
-            authDomain: "web-produtcs.firebaseapp.com",
-            projectId: "web-produtcs",
-            storageBucket: "web-produtcs.firebasestorage.app",
-            messagingSenderId: "631567218716",
-            appId: "1:631567218716:web:ffe54bbae5c02272b9c7d9",
-            measurementId: "G-XP37QRT9R9",
-            databaseURL: "https://web-produtcs-default-rtdb.asia-southeast1.firebasedatabase.app"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const db = getDatabase(app);
-        const rootRef = ref(db, 'hardwareProject');
-
-        let products = [];
-        let taskData = { web: [], board: [], document: [] };
-        let editingId = null; 
-        let imageFetchController = null;
-
-        // ตารางผูกความสัมพันธ์ของสิทธิ์สมาชิกประเจกต์
-        const TEAM_REGISTRY = {
-            "1111": { name: "ฟิล์ม", role: "web", label: "สายงานระบบเว็บ" },
-            "2222": { name: "เฮง", role: "board", label: "สายงานฮาร์ดแวร์บอร์ด" },
-            "3333": { name: "ไอซ์", role: "document", label: "สายงานเล่มรายงาน" },
-            "2548": { name: "ภูริพงศ์", role: "admin", label: "ผู้ดูแลระบบกลาง" }
-        };
-
-        function verifyAuthority(pin, strictRole = null) {
-            const user = TEAM_REGISTRY[pin];
-            if (!user) return null;
-            if (user.role === 'admin') return user; 
-            if (strictRole && user.role !== strictRole) return null; 
-            return user;
-        }
-
-        // ระบบเปลี่ยนหน้าจอ SPA Navigation
-        window.switchTab = function(tabName) {
-            const tabs = ['dashboard', 'hardware', 'workspace'];
-            tabs.forEach(t => {
-                const btn = document.getElementById(`tab-${t}`);
-                const view = document.getElementById(`view-${t}`);
-                if(t === tabName) {
-                    btn.className = `flex-1 sm:flex-none px-4 py-2 rounded-lg text-xs font-bold transition-all bg-white text-slate-900 shadow-2xs`;
-                    view.classList.replace('hidden', 'block');
-                } else {
-                    btn.className = `flex-1 sm:flex-none px-4 py-2 rounded-lg text-xs font-bold transition-all text-slate-400 hover:text-slate-600`;
-                    view.classList.replace('block', 'hidden');
-                }
-            });
-            document.getElementById('budget-dock-bar').style.display = (tabName === 'workspace') ? 'none' : 'block';
-        }
-
-        window.showToast = function(message, isError = false) {
-            const container = document.getElementById('toast-container');
-            const toast = document.createElement('div');
-            toast.className = `${isError ? 'bg-rose-600' : 'bg-slate-900'} text-white px-4 py-2.5 rounded-xl shadow-lg flex items-center gap-3 text-xs font-semibold toast-enter`;
-            toast.innerHTML = `<span>${message}</span>`;
-            container.appendChild(toast);
-            setTimeout(() => { toast.classList.remove('toast-enter'); toast.classList.add('toast-active'); }, 10);
-            setTimeout(() => { toast.remove(); }, 3000);
-        };
-
-        window.copyAccount = function() {
-            navigator.clipboard.writeText("1980737568").then(() => window.showToast("คัดลอกเลขบัญชีกองกลางรับโอนสำเร็จ"))
-        }
-
-        window.calculateSplit = function() {
-            const rem = parseFloat(document.getElementById('totalRemaining').innerText.replace(/,/g, '')) || 0;
-            let count = parseInt(document.getElementById('splitCount').value) || 1;
-            if(count < 1) count = 1;
-            document.getElementById('splitResult').innerText = (rem / count).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
-        }
-
-        function triggerDiscordWebhook(title, description, hexColor) {
-            if(!DISCORD_WEBHOOK_URL) return;
-            fetch(DISCORD_WEBHOOK_URL, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    username: "Project Matrix Tracker",
-                    embeds: [{ title, description, color: hexColor, timestamp: new Date().toISOString() }]
-                })
-            }).catch(e => console.error(e));
-        }
-
-        // คอยดักจับสัญญานข้อมูลจาก Cloud
-        onValue(rootRef, (snapshot) => {
-            const val = snapshot.val() || {};
-            
-            // ประมวลผลกลุ่มวัสดุจัดซื้อ
-            if(val.products) {
-                products = Array.isArray(val.products) ? val.products : Object.values(val.products);
-            } else { products = []; }
-
-            // ประมวลผลกลุ่ม Tasks ติดตามความก้าวหน้า
-            taskData = val.tasks || { web: [], board: [], document: [] };
-            if(!taskData.web) taskData.web = [];
-            if(!taskData.board) taskData.board = [];
-            if(!taskData.document) taskData.document = [];
-
-            calculateProgressMetrics();
-            renderHardwareList();
-            renderWorkspaceBoard();
-            fetchImagesDynamically();
-        });
-
-        function calculateProgressMetrics() {
-            const webTasks = taskData.web;
-            const webDone = webTasks.filter(t => t.status === 'done').length;
-            const webPct = webTasks.length ? Math.round((webDone / webTasks.length) * 100) : 0;
-            document.getElementById('pct-web').innerText = `${webPct}%`;
-            document.getElementById('bar-web').style.width = `${webPct}%`;
-
-            const boardTasks = taskData.board;
-            const boardDone = boardTasks.filter(t => t.status === 'done').length;
-            const boardPct = boardTasks.length ? Math.round((boardDone / boardTasks.length) * 100) : 0;
-            document.getElementById('pct-board').innerText = `${boardPct}%`;
-            document.getElementById('bar-board').style.width = `${boardPct}%`;
-
-            const docTasks = taskData.document;
-            const docDone = docTasks.filter(t => t.status === 'done').length;
-            const docPct = docTasks.length ? Math.round((docDone / docTasks.length) * 100) : 0;
-            document.getElementById('pct-doc').innerText = `${docPct}%`;
-            document.getElementById('bar-doc').style.width = `${docPct}%`;
-
-            const buyDone = products.filter(p => p.status === 'bought').length;
-            const buyPct = products.length ? Math.round((buyDone / products.length) * 100) : 0;
-            document.getElementById('pct-buy').innerText = `${buyPct}%`;
-            document.getElementById('bar-buy').style.width = `${buyPct}%`;
-        }
-
-        // ==========================================
-        // LOGIC ENGINE: HARDWARE LIST MANAGER
-        // ==========================================
-        window.saveProduct = function() {
-            const name = document.getElementById('newName').value.trim();
-            const price = parseFloat(document.getElementById('newPrice').value);
-            const qty = parseInt(document.getElementById('newQty').value) || 1;
-            const link = document.getElementById('newLink').value.trim() || "#";
-            const image = document.getElementById('newImage').value.trim();
-
-            if(!name || isNaN(price)) { window.showToast("กรุณากรอกข้อมูลพัสดุจำเป็นให้ครบถ้วน", true); return; }
-
-            if (editingId) {
-                const index = products.findIndex(p => p.id === editingId);
-                if (index !== -1) {
-                    const currentStatus = products[index].status || 'pending';
-                    products[index] = { id: editingId, name, price, qty, link, status: currentStatus };
-                    if (image) products[index].fixedImage = image;
-                    else delete products[index].fixedImage;
-                    
-                    set(ref(db, 'hardwareProject/products'), products);
-                    triggerDiscordWebhook("📝 แก้ไขข้อมูลคุณสมบัติพัสดุอุปกรณ์", `รายการ: ${name}\nปรับปรุงรายละเอียดเสร็จสิ้น`, 16753920);
-                    window.showToast("อัปเดตข้อมูลอุปกรณ์พัสดุเรียบร้อย");
-                }
-                window.cancelEdit();
-            } else {
-                const newP = { id: Date.now(), name, price, qty, link, status: 'pending' };
-                if (image) newP.fixedImage = image;
-                let updatedList = [...products]; updatedList.push(newP);
-                
-                set(ref(db, 'hardwareProject/products'), updatedList);
-                triggerDiscordWebhook("🛒 เพิ่มรายการวัสดุเข้าคลังพัสดุใหม่", `รายการ: ${name}\nประเมินงบ: ฿${(price*qty).toLocaleString()}`, 2664269);
-                
-                document.getElementById('newName').value = ''; document.getElementById('newPrice').value = ''; document.getElementById('newQty').value = '1'; document.getElementById('newLink').value = ''; document.getElementById('newImage').value = '';
-                window.showToast("บันทึกข้อมูลอุปกรณ์พัสดุเรียบร้อย");
-            }
-        };
-
-        window.editProduct = function(id) {
-            const product = products.find(p => p.id === id);
-            if (!product) return;
-
-            document.getElementById('newName').value = product.name;
-            document.getElementById('newPrice').value = product.price;
-            document.getElementById('newQty').value = product.qty || 1;
-            document.getElementById('newLink').value = product.link === "#" ? "" : product.link;
-            document.getElementById('newImage').value = product.fixedImage || "";
-
-            editingId = id;
-            document.getElementById('formTitle').innerText = "แก้ไขข้อมูลคุณสมบัติพัสดุอุปกรณ์";
-            document.getElementById('saveBtn').innerText = "บันทึกการแก้ไข";
-            document.getElementById('saveBtn').className = "bg-amber-600 hover:bg-amber-700 text-white font-bold py-2 px-4 rounded-xl text-xs transition-all";
-            document.getElementById('cancelEditBtn').classList.remove('hidden');
-
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        };
-
-        window.cancelEdit = function() {
-            editingId = null;
-            document.getElementById('formTitle').innerText = "ลงทะเบียนจัดซื้ออุปกรณ์พัสดุ";
-            document.getElementById('saveBtn').innerText = "บันทึกพัสดุ";
-            document.getElementById('saveBtn').className = "bg-slate-900 hover:bg-slate-800 text-white font-bold py-2 px-4 rounded-xl text-xs transition-all";
-            document.getElementById('cancelEditBtn').classList.add('hidden');
-            
-            document.getElementById('newName').value = ''; 
-            document.getElementById('newPrice').value = ''; 
-            document.getElementById('newQty').value = '1'; 
-            document.getElementById('newLink').value = ''; 
-            document.getElementById('newImage').value = '';
-        };
-
-        window.updateProductStatus = function(id, nextStatus) {
-            const pin = prompt("🔐 ป้อนรหัสสิทธิ์ของคุณ เพื่ออัปเดตสถานะจัดซื้อพัสดุวัตถุนี้:");
-            const user = verifyAuthority(pin); 
-            if(!user) { window.showToast("รหัสตรวจสอบผิดพลาด การจัดสิทธิ์ล้มเหลว", true); return; }
-
-            const updated = products.map(p => {
-                if(p.id === id) p.status = nextStatus;
-                return p;
-            });
-            set(ref(db, 'hardwareProject/products'), updated);
-            triggerDiscordWebhook("🔄 ปรับปรุงสถานะสิทธิ์คลังจัดซื้อ", `ผู้ดำเนินการ: ${user.name}\nปรับเปลี่ยนสถานะจัดซื้อเรียบร้อย`, 16753920);
-        };
-
-        window.deleteProduct = function(id) {
-            const pin = prompt("🚨 กรุณายืนยันรหัสพินส่วนกลาง (รหัสภูริพงศ์) เพื่อลบอุปกรณ์ถาวร:");
-            const user = verifyAuthority(pin, 'admin'); 
-            if(!user) { window.showToast("สิทธิ์การเข้าถึงเพื่อถอดถอนไอเทมถูกปฏิเสธ", true); return; }
-
-            const updated = products.filter(p => p.id !== id);
-            set(ref(db, 'hardwareProject/products'), updated);
-            window.showToast("ลบพัสดุออกจากระบบเสร็จสิ้น");
-        };
-
-        function renderHardwareList() {
-            const listEl = document.getElementById('productList');
-            listEl.innerHTML = '';
-            
-            let budget = 0; let bought = 0; let remaining = 0;
-
-            products.forEach(p => {
-                const qty = p.qty || 1; const sum = p.price * qty;
-                budget += sum;
-                if(p.status === 'bought') bought += sum;
-                else if(p.status === 'pending') remaining += sum;
-
-                // 🌟 แก้ไข: จัดแต่งธีมสีและผูกป้ายสถานะภาษาไทยชัดเจนตามเงื่อนไข (ซื้อแล้ว / ยังไม่ซื้อ / รอก่อนค่อยซื้อ)
-                let cardBg = 'bg-white border-slate-200'; 
-                let overlay = 'hidden'; 
-                let sliderPos = 'translate-x-0';
-                let badgeHtml = '';
-
-                if(p.status === 'bought') { 
-                    cardBg = 'bg-slate-50 border-emerald-500/20 opacity-95'; 
-                    overlay = 'bg-emerald-500/5 border-emerald-500'; 
-                    sliderPos = 'translate-x-[200%]'; 
-                    badgeHtml = '<span class="bg-emerald-600 text-white font-bold text-xs px-3 py-1 rounded-xl shadow-sm border border-emerald-500 tracking-wider">ซื้อแล้ว</span>';
-                } else if(p.status === 'hold') { 
-                    cardBg = 'bg-slate-50 border-amber-500/20 opacity-90'; 
-                    overlay = 'bg-amber-500/5 border-amber-400'; 
-                    sliderPos = 'translate-x-[100%]'; 
-                    badgeHtml = '<span class="bg-amber-500 text-white font-bold text-xs px-3 py-1 rounded-xl shadow-sm border border-amber-400 tracking-wider">รอก่อนค่อยซื้อ</span>';
-                } else {
-                    cardBg = 'bg-white border-slate-200'; 
-                    overlay = 'bg-rose-500/5 border-rose-400'; 
-                    sliderPos = 'translate-x-0'; 
-                    badgeHtml = '<span class="bg-rose-600 text-white font-bold text-xs px-3 py-1 rounded-xl shadow-sm border border-rose-500 tracking-wider">ยังไม่ซื้อ</span>';
-                }
-
-                const card = document.createElement('div');
-                card.className = `premium-card bg-white border rounded-2xl overflow-hidden flex flex-col justify-between relative group ${cardBg}`;
-                card.innerHTML = `
-                    <div class="absolute top-2.5 right-2.5 z-20 flex gap-1.5 md:opacity-0 group-hover:opacity-100 transition-all duration-300">
-                        <button onclick="window.editProduct(${p.id})" class="w-6 h-6 border flex items-center justify-center rounded-lg text-slate-400 hover:text-slate-900 bg-white shadow-2xs transition-colors" title="แก้ไขข้อมูล">✏️</button>
-                        <button onclick="window.deleteProduct(${p.id})" class="w-6 h-6 border flex items-center justify-center rounded-lg text-slate-400 hover:text-rose-600 bg-white shadow-2xs transition-colors" title="ลบพัสดุ">✕</button>
-                    </div>
-                    
-                    <div class="h-36 bg-white relative flex items-center justify-center p-3 border-b border-slate-100 overflow-hidden">
-                        <div id="loading-${p.id}" class="absolute inset-0 bg-slate-50 flex items-center justify-center text-[10px] text-slate-400 font-medium">
-                            <svg class="w-4 h-4 animate-spin text-slate-300 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 1121.21 15H19"/></svg>
-                            เรียกภาพหน้าร้าน
-                        </div>
-                        <img id="img-${p.id}" src="" alt="${p.name}" class="w-full h-full object-contain hidden transition-transform duration-700 group-hover:scale-105">
-                        
-                        <div class="absolute inset-0 flex items-center justify-center pointer-events-none border-b-2 ${overlay}">
-                            ${badgeHtml}
-                        </div>
-                    </div>
-
-                    <div class="p-4 flex-grow flex flex-col justify-between">
-                        <div>
-                            <h4 class="font-bold text-slate-900 text-xs leading-snug line-clamp-2 h-9 pr-4 group-hover:text-blue-600 transition-colors">${p.name}</h4>
-                            <div class="mt-1 font-mono text-sm font-bold text-slate-900">฿${sum.toLocaleString()} <span class="text-[10px] text-slate-400 font-medium">/ ${qty} ชิ้น</span></div>
-                        </div>
-                        <div class="mt-4 pt-3 border-t border-slate-100">
-                            <div class="relative grid grid-cols-3 bg-slate-100 p-0.5 rounded-xl text-center text-[10px] font-bold h-7 items-center cursor-pointer mb-2">
-                                <div class="status-slider absolute top-0.5 bottom-0.5 left-0.5 w-[32%] bg-white rounded-md shadow-2xs ${sliderPos}"></div>
-                                <div onclick="window.updateProductStatus(${p.id}, 'pending')" class="z-10 text-rose-500 py-1">ยัง</div>
-                                <div onclick="window.updateProductStatus(${p.id}, 'hold')" class="z-10 text-amber-500 py-1">พัก</div>
-                                <div onclick="window.updateProductStatus(${p.id}, 'bought')" class="z-10 text-emerald-600 py-1">คลัง</div>
-                            </div>
-                            <a href="${p.link}" target="_blank" class="w-full text-center text-[10px] font-bold text-slate-600 bg-slate-50 border py-1.5 rounded-xl block hover:bg-slate-100 transition-colors">หน้าร้านค้า</a>
-                        </div>
-                    </div>
-                `;
-                listEl.appendChild(card);
-            });
-
-            document.getElementById('totalBudget').innerText = budget.toLocaleString();
-            document.getElementById('totalBought').innerText = bought.toLocaleString();
-            document.getElementById('totalRemaining').innerText = remaining.toLocaleString();
-            window.calculateSplit();
-        }
-
-        async function fetchImagesDynamically() {
-            if (imageFetchController) imageFetchController.abort();
-            imageFetchController = new AbortController(); 
-            const { signal } = imageFetchController;
-
-            if(products.length === 0) return;
-            for (const p of products) {
-                if (signal.aborted) return;
-                const imgEl = document.getElementById(`img-${p.id}`); 
-                const loadEl = document.getElementById(`loading-${p.id}`);
-                if (!imgEl || !loadEl) continue;
-
-                if (p.fixedImage) {
-                    imgEl.src = p.fixedImage;
-                    imgEl.onload = () => { loadEl?.classList.add('hidden'); imgEl?.classList.remove('hidden'); };
-                    continue; 
-                }
-
-                if (p.link && p.link !== "#") {
-                    try {
-                        const res = await fetch(`https://api.microlink.io?url=${encodeURIComponent(p.link)}`, { signal }); 
-                        const d = await res.json();
-                        imgEl.src = (d.status === 'success' && d.data.image?.url) ? d.data.image.url : `https://placehold.co/400x300/f1f5f9/64748b?text=No+Image`;
-                    } catch (e) { 
-                        if (e.name === 'AbortError') return; 
-                        imgEl.src = `https://placehold.co/400x300/fee2e2/ef4444?text=Error`; 
-                    }
-                } else { 
-                    imgEl.src = `https://placehold.co/400x300/f1f5f9/64748b?text=No+Link`; 
-                }
-                imgEl.onload = () => { loadEl?.classList.add('hidden'); imgEl?.classList.remove('hidden'); };
-                await new Promise(r => setTimeout(r, 100));
-            }
-        }
-
-        // ==========================================
-        // LOGIC ENGINE: TASK MANAGEMENT WORKSPACE
-        // ==========================================
-        window.saveTask = function() {
-            const cat = document.getElementById('taskCategory').value;
-            const title = document.getElementById('taskTitle').value.trim();
-
-            if(!title) { window.showToast("กรุณากรอกรายละเอียดเนื้องานที่ต้องการสั่งจ่ายด้วย", true); return; }
-
-            const asigneeMap = { "web": "ฟิล์ม", "board": "เฮง", "document": "ไอซ์" };
-            const newT = { id: 'tk-' + Date.now(), title, assignee: asigneeMap[cat], status: 'pending' };
-            
-            taskData[cat].push(newT);
-            set(ref(db, 'hardwareProject/tasks'), taskData);
-
-            triggerDiscordWebhook("📢 มอบหมายกระจายภาระงานใหม่เข้าระบบ", `**งาน:** ${title}\n**ผู้ดูแลสายตรง:** ${asigneeMap[cat]}`, 8345855);
-            document.getElementById('taskTitle').value = '';
-            window.showToast("ออกคำสั่งจ่ายงานกระจายเข้าบอร์ดสำเร็จ");
-        };
-
-        window.updateTaskStatus = function(category, taskId, nextStatus) {
-            const pin = prompt(`🔐 ป้อนรหัส PIN ตนเอง เพื่อเซ็นรับรองสถานะงานชิ้นนี้:`);
-            const user = verifyAuthority(pin, category); 
-            
-            if(!user) { 
-                window.showToast("สิทธิ์ปฏิเสธการเข้าถึง รหัสไม่ถูกต้องหรือคุณไม่ได้คุมงานสายนี้", true); 
-                renderWorkspaceBoard(); 
-                return; 
-            }
-
-            const list = taskData[category] || [];
-            const idx = list.findIndex(t => t.id === taskId);
-            if(idx !== -1) {
-                list[idx].status = nextStatus;
-                set(ref(db, 'hardwareProject/tasks'), taskData);
-                
-                const labelState = nextStatus === 'done' ? 'สำเร็จเรียบร้อย' : nextStatus === 'doing' ? 'เริ่มดำเนินการแล้ว' : 'รอจัดทำ';
-                triggerDiscordWebhook("🔄 เซ็นตรวจรับสถานะเนื้องานโปรเจกต์", `**ผู้ลงนาม:** ${user.name}\n**เนื้องาน:** ${list[idx].title}\n**ผลอัปเดต:** ${labelState}`, 3447003);
-                window.showToast(`รับรองอัปเดตงานโดยคุณ: ${user.name}`);
-            }
-        };
-
-        window.deleteTask = function(category, taskId) {
-            const pin = prompt("🚨 ต้องยืนยันสิทธิ์ของใครคนใดคนหนึ่งในทีมด้วยรหัสพินเพื่อทำการลบภาระงานนี้:");
-            const user = verifyAuthority(pin); 
-            
-            if(!user) { window.showToast("รหัสรักษาความปลอดภัยไม่ถูกต้อง", true); return; }
-
-            taskData[category] = (taskData[category] || []).filter(t => t.id !== taskId);
-            set(ref(db, 'hardwareProject/tasks'), taskData);
-            window.showToast("ถอนข้อกำหนดงานออกจากบอร์ดแล้ว");
-        };
-
-        function renderWorkspaceBoard() {
-            const categories = ['web', 'board', 'document'];
-            categories.forEach(cat => {
-                const container = document.getElementById(`tasks-${cat}-list`);
-                container.innerHTML = '';
-                const taskList = taskData[cat] || [];
-
-                if(taskList.length === 0) {
-                    container.innerHTML = `<div class="text-center py-8 text-slate-400 text-[11px] font-medium border border-dashed rounded-xl bg-slate-50/50">ยังไม่มีรายการงานสะสม</div>`;
-                    return;
-                }
-
-                taskList.forEach(t => {
-                    const block = document.createElement('div');
-                    let stateBorder = 'border-slate-200'; let badgeStyle = 'bg-slate-100 text-slate-500';
-                    if(t.status === 'doing') { stateBorder = 'border-amber-400/80 shadow-2xs'; badgeStyle = 'bg-amber-50 text-amber-600'; }
-                    else if(t.status === 'done') { stateBorder = 'border-emerald-400/40 opacity-75'; badgeStyle = 'bg-emerald-50 text-emerald-600'; }
-
-                    block.className = `bg-white border rounded-xl p-3 shadow-3xs premium-card flex flex-col justify-between gap-3.5 ${stateBorder}`;
-                    block.innerHTML = `
-                        <div>
-                            <div class="flex justify-between items-start gap-2">
-                                <h4 class="text-xs font-semibold text-slate-900 leading-tight">${t.title}</h4>
-                                <button onclick="window.deleteTask('${cat}', '${t.id}')" class="text-slate-300 hover:text-rose-500 font-bold text-xs p-0.5">✕</button>
-                            </div>
-                        </div>
-                        <div class="flex justify-between items-center border-t pt-2">
-                            <span class="text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md ${badgeStyle}">${t.status === 'done' ? 'สำเร็จ' : t.status === 'doing' ? 'กำลังทำ' : 'รอคิว'}</span>
-                            <select onchange="window.updateTaskStatus('${cat}', '${t.id}', this.value)" class="bg-slate-50 border rounded-lg text-[10px] font-bold text-slate-600 p-1">
-                                <option value="pending" ${t.status === 'pending' ? 'selected' : ''}>⏳ ต่อคิว</option>
-                                <option value="doing" ${t.status === 'doing' ? 'selected' : ''}>⚡ ลุยงาน</option>
-                                <option value="done" ${t.status === 'done' ? 'selected' : ''}>✅ สำเร็จ</option>
-                            </select>
-                        </div>
-                    `;
-                    container.appendChild(block);
-                });
-            });
-        }
-    </script>
+    <!-- Main JavaScript Logic bundled by Vite -->
+    <script type="module" src="/src/main.js"></script>
 </body>
 </html>
