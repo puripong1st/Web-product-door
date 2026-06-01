@@ -62,9 +62,10 @@ window.switchTab = function(tabName) {
         budgetBar.style.display = (tabName === 'workspace' || tabName === 'links') ? 'none' : 'block';
     }
 
-    // โหลดข้อมูลคอมมิตเมื่อสวิตช์มาที่แท็บคลังลิงก์
+    // โหลดข้อมูลคอมมิตและซิงค์ข้อมูลคู่มือเมื่อสวิตช์มาที่แท็บคลังลิงก์
     if (tabName === 'links') {
         syncLatestCommit();
+        syncManualLastUpdated();
     }
 }
 
@@ -152,6 +153,75 @@ async function syncLatestCommit() {
         }
     } catch (e) {
         el.innerHTML = `<span class="text-rose-400 font-bold">เชื่อม GitHub ล้มเหลว (${e.message})</span>`;
+    }
+}
+
+// ซิงค์ข้อมูลวันที่อัปเดตล่าสุดจากหน้าคู่มือระบบฉบับสมบูรณ์
+async function syncManualLastUpdated() {
+    const el = document.getElementById('manual-last-updated');
+    if (!el) return;
+    
+    el.innerHTML = `<span class="animate-pulse text-[9px] text-slate-400 font-medium">⏳ กำลังซิงค์ข้อมูลอัปเดต...</span>`;
+    
+    try {
+        const manualUrl = 'https://project-sigma-ivory-21.vercel.app/complete_system_manual_th.html';
+        const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(manualUrl)}`;
+        
+        const res = await fetch(proxyUrl);
+        if (!res.ok) throw new Error('ไม่สามารถเข้าถึงคู่มือได้');
+        
+        const html = await res.text();
+        
+        // ดึงวันที่อัปเดตล่าสุดจากเนื้อหา HTML  
+        // รูปแบบ: อัปเดตล่าสุด: 2026-06-01 13:54:00 (+07:00)
+        const match = html.match(/อัปเดตล่าสุด:\s*([\d\-]+\s+[\d:]+)\s*\(\+[\d:]+\)/);
+        
+        if (match && match[1]) {
+            const rawDate = match[1].trim(); // "2026-06-01 13:54:00"
+            const dateObj = new Date(rawDate.replace(' ', 'T') + '+07:00');
+            
+            const formattedDate = dateObj.toLocaleString('th-TH', {
+                year: 'numeric', month: 'short', day: 'numeric',
+                hour: '2-digit', minute: '2-digit'
+            });
+            
+            // คำนวณความเก่าของอัปเดต
+            const now = new Date();
+            const diffMs = now - dateObj;
+            const diffHours = diffMs / (1000 * 60 * 60);
+            const diffDays = diffHours / 24;
+            
+            let freshnessColor = 'text-slate-500 bg-slate-100 border-slate-200';
+            let freshnessIcon = '📄';
+            let freshnessLabel = '';
+            
+            if (diffHours < 24) {
+                freshnessColor = 'text-emerald-700 bg-emerald-50 border-emerald-200';
+                freshnessIcon = '🟢';
+                freshnessLabel = 'อัปเดตล่าสุดวันนี้';
+            } else if (diffDays < 7) {
+                freshnessColor = 'text-amber-700 bg-amber-50 border-amber-200';
+                freshnessIcon = '🟡';
+                freshnessLabel = `${Math.floor(diffDays)} วันที่แล้ว`;
+            } else {
+                freshnessColor = 'text-slate-600 bg-slate-50 border-slate-200';
+                freshnessIcon = '📄';
+                freshnessLabel = `${Math.floor(diffDays)} วันที่แล้ว`;
+            }
+            
+            el.innerHTML = `
+                <div class="flex flex-col gap-1">
+                    <span class="inline-flex items-center gap-1 text-[9px] font-bold px-2 py-0.5 rounded-md border ${freshnessColor}">
+                        ${freshnessIcon} ${freshnessLabel}
+                    </span>
+                    <span class="text-[9px] text-slate-400 font-medium">ซิงค์: ${formattedDate}</span>
+                </div>
+            `;
+        } else {
+            el.innerHTML = `<span class="text-[9px] text-slate-400 font-medium">⚠️ ไม่พบข้อมูลวันที่อัปเดต</span>`;
+        }
+    } catch (e) {
+        el.innerHTML = `<span class="text-[9px] text-rose-500 font-bold">❌ ซิงค์ล้มเหลว (${e.message})</span>`;
     }
 }
 
