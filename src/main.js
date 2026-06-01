@@ -164,20 +164,14 @@ async function syncManualLastUpdated() {
     el.innerHTML = `<span class="animate-pulse text-[9px] text-slate-400 font-medium">⏳ กำลังซิงค์ข้อมูลอัปเดต...</span>`;
     
     try {
-        const manualUrl = 'https://project-sigma-ivory-21.vercel.app/complete_system_manual_th.html';
-        const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(manualUrl)}`;
+        // เรียก API route ของตัวเอง (same-origin, ไม่มี CORS)
+        const res = await fetch('/api/sync-manual');
+        if (!res.ok) throw new Error(`Server error ${res.status}`);
         
-        const res = await fetch(proxyUrl);
-        if (!res.ok) throw new Error('ไม่สามารถเข้าถึงคู่มือได้');
+        const data = await res.json();
         
-        const html = await res.text();
-        
-        // ดึงวันที่อัปเดตล่าสุดจากเนื้อหา HTML  
-        // รูปแบบ: อัปเดตล่าสุด: 2026-06-01 13:54:00 (+07:00)
-        const match = html.match(/อัปเดตล่าสุด:\s*([\d\-]+\s+[\d:]+)\s*\(\+[\d:]+\)/);
-        
-        if (match && match[1]) {
-            const rawDate = match[1].trim(); // "2026-06-01 13:54:00"
+        if (data.synced && data.lastUpdated) {
+            const rawDate = data.lastUpdated; // "2026-06-01 13:54:00"
             const dateObj = new Date(rawDate.replace(' ', 'T') + '+07:00');
             
             const formattedDate = dateObj.toLocaleString('th-TH', {
@@ -218,7 +212,7 @@ async function syncManualLastUpdated() {
                 </div>
             `;
         } else {
-            el.innerHTML = `<span class="text-[9px] text-slate-400 font-medium">⚠️ ไม่พบข้อมูลวันที่อัปเดต</span>`;
+            el.innerHTML = `<span class="text-[9px] text-slate-400 font-medium">⚠️ ${data.error || 'ไม่พบข้อมูลวันที่อัปเดต'}</span>`;
         }
     } catch (e) {
         el.innerHTML = `<span class="text-[9px] text-rose-500 font-bold">❌ ซิงค์ล้มเหลว (${e.message})</span>`;
