@@ -89,6 +89,29 @@ window.calculateSplit = function() {
     document.getElementById('splitResult').innerText = (rem / count).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
 }
 
+window.toggleAdminPassword = function(btn) {
+    const textEl = document.getElementById('admin-pass-text');
+    if (!textEl) return;
+    
+    if (textEl.innerText === 'zazoza1234') {
+        textEl.innerText = '••••••••';
+        btn.innerText = 'แสดงรหัส';
+        window.showToast("ซ่อนรหัสผ่านเรียบร้อย");
+        return;
+    }
+    
+    const pin = prompt("🔐 กรุณากรอกรหัส PIN ของทีมงานเพื่อดูรหัสผ่านเบื้องหลัง:");
+    const user = verifyAuthority(pin);
+    
+    if (user) {
+        textEl.innerText = 'zazoza1234';
+        btn.innerText = 'ซ่อนรหัส';
+        window.showToast(`ยืนยันสิทธิ์สำเร็จ ยินดีต้อนรับคุณ ${user.name}`);
+    } else {
+        window.showToast("รหัส PIN ไม่ถูกต้องหรือคุณไม่มีสิทธิ์เข้าถึง", true);
+    }
+}
+
 function triggerDiscordWebhook(title, description, hexColor) {
     if (!DISCORD_WEBHOOK_URL) return;
     fetch(DISCORD_WEBHOOK_URL, {

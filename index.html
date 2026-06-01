@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Project Workspace & Hardware Management Suite</title>
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
     <!-- Prompt Font from Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -24,10 +26,8 @@
     <nav class="sticky top-0 bg-white/80 backdrop-blur-xl border-b border-slate-200/60 z-40 py-4 px-4 shadow-sm">
         <div class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
             <div class="flex items-center gap-3">
-                <div class="w-10 h-10 bg-slate-900 rounded-xl flex items-center justify-center text-white font-bold">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
-                    </svg>
+                <div class="w-10 h-10 rounded-xl overflow-hidden shrink-0 flex items-center justify-center border border-slate-200/60 bg-white shadow-2xs">
+                    <img src="/icons/icon-192x192.png" alt="Logo" class="w-full h-full object-cover">
                 </div>
                 <div>
                     <h1 class="text-base font-bold tracking-tight text-slate-900">Project Mission Suite</h1>
@@ -306,9 +306,15 @@
                                 <h4 class="text-xs font-bold text-slate-900 leading-snug">เว็บควบคุมระดับผู้ดูแล (Admin Portal)</h4>
                                 <p class="text-[11px] text-slate-400 mt-0.5">ระบบจัดการและยืนยันสิทธิ์เข้าใช้ระบบเบื้องหลัง</p>
                             </div>
-                            <div class="bg-white border rounded-lg p-2.5 text-[11px] text-slate-500 space-y-1 font-medium">
+                            <div class="bg-white border rounded-lg p-2.5 text-[11px] text-slate-500 space-y-1.5 font-medium">
                                 <div class="flex justify-between"><span>ผู้ใช้งาน (Username):</span> <span class="font-bold text-slate-800 font-mono">admin</span></div>
-                                <div class="flex justify-between"><span>รหัสผ่าน (Password):</span> <span class="font-bold text-slate-800 font-mono">zazoza1234</span></div>
+                                <div class="flex justify-between items-center">
+                                    <span>รหัสผ่าน (Password):</span>
+                                    <div class="flex items-center gap-2">
+                                        <span id="admin-pass-text" class="font-bold text-slate-800 font-mono">••••••••</span>
+                                        <button onclick="window.toggleAdminPassword(this)" class="text-blue-600 hover:text-blue-800 font-bold hover:underline transition-colors focus:outline-none">แสดงรหัส</button>
+                                    </div>
+                                </div>
                             </div>
                             <a href="https://project-sigma-ivory-21.vercel.app/admin/login" target="_blank" class="w-full text-center text-xs font-bold text-white bg-slate-900 hover:bg-slate-800 py-2 rounded-lg block transition-colors mt-1 shadow-2xs">เปิดเว็บบอร์ดแอดมิน</a>
                         </div>
@@ -340,15 +346,13 @@
                             <a href="https://wokwi.com/projects/464968147521473537" target="_blank" class="w-full text-center text-xs font-bold text-white bg-slate-900 hover:bg-slate-800 py-2 rounded-lg block transition-colors mt-2">เปิดบอร์ดจำลองบน Wokwi</a>
                         </div>
                         
-                        <!-- Checklist (Placeholder dynamically updated when uploaded) -->
-                        <div class="bg-slate-50 border border-dashed border-slate-300 p-4 rounded-xl flex flex-col justify-between gap-1.5 text-center">
+                        <!-- Checklist & Operations (Vercel Production Link) -->
+                        <div class="bg-slate-50 border p-4 rounded-xl flex flex-col justify-between gap-1">
                             <div>
-                                <h4 class="text-xs font-bold text-slate-400 leading-snug">เช็คลิสต์อุปกรณ์และการดำเนินงาน (Vercel)</h4>
-                                <p class="text-[11px] text-slate-400 mt-0.5">ลิงก์ผลงานจริงของคุณบนคลาวด์ Vercel หลังอัปเดตระบบ</p>
+                                <h4 class="text-xs font-bold text-slate-900 leading-snug">เช็คลิสต์อุปกรณ์และการดำเนินงาน (Vercel)</h4>
+                                <p class="text-[11px] text-slate-400 mt-0.5">หน้าเว็บบอร์ดแสดงผลงานระบบจริงของคุณบนระบบ Vercel</p>
                             </div>
-                            <div class="inline-flex justify-center items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-100/50 border border-slate-200 text-[10px] text-slate-400 font-bold tracking-wide">
-                                ⏳ รอเผยแพร่งานเข้า Vercel เพื่อสร้างลิงก์ผลลัพธ์
-                            </div>
+                            <a href="https://web-product-door.vercel.app/" target="_blank" class="w-full text-center text-xs font-bold text-white bg-slate-900 hover:bg-slate-800 py-2 rounded-lg block transition-colors mt-2">เปิดดูผลงานจริงบน Vercel</a>
                         </div>
                     </div>
                 </div>
