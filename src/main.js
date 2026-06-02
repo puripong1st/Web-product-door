@@ -130,7 +130,7 @@ async function syncLatestCommit() {
     const el = document.getElementById('github-commit-info');
     if (!el) return;
     try {
-        const res = await fetch('https://api.github.com/repos/puripong1st/SmartAccess-Projects/commits?per_page=1');
+        const res = await fetch('https://api.github.com/repos/puripong1st/SmartAccess-Project/commits?per_page=1');
         if (!res.ok) throw new Error('Repository Not Found or Rate Limited');
         const data = await res.json();
         if (data && data[0]) {
