@@ -22,7 +22,7 @@ const rootRef = ref(db, 'hardwareProject');
 
 let products = [];
 let taskData = { web: [], board: [], document: [] };
-let editingId = null; 
+let editingId = null;
 let imageFetchController = null;
 
 // ตารางผูกความสัมพันธ์ของสิทธิ์สมาชิกโปรเจกต์โดยดึงจาก .env
@@ -36,13 +36,13 @@ const TEAM_REGISTRY = {
 function verifyAuthority(pin, strictRole = null) {
     const user = TEAM_REGISTRY[pin];
     if (!user) return null;
-    if (user.role === 'admin') return user; 
-    if (strictRole && user.role !== strictRole) return null; 
+    if (user.role === 'admin') return user;
+    if (strictRole && user.role !== strictRole) return null;
     return user;
 }
 
 // ระบบเปลี่ยนหน้าจอ SPA Navigation
-window.switchTab = function(tabName) {
+window.switchTab = function (tabName) {
     const tabs = ['dashboard', 'hardware', 'workspace', 'links'];
     tabs.forEach(t => {
         const btn = document.getElementById(`tab-${t}`);
@@ -56,7 +56,7 @@ window.switchTab = function(tabName) {
             view.classList.replace('block', 'hidden');
         }
     });
-    
+
     const budgetBar = document.getElementById('budget-dock-bar');
     if (budgetBar) {
         budgetBar.style.display = (tabName === 'workspace' || tabName === 'links') ? 'none' : 'block';
@@ -69,7 +69,7 @@ window.switchTab = function(tabName) {
     }
 }
 
-window.showToast = function(message, isError = false) {
+window.showToast = function (message, isError = false) {
     const container = document.getElementById('toast-container');
     const toast = document.createElement('div');
     toast.className = `${isError ? 'bg-rose-600' : 'bg-slate-900'} text-white px-4 py-2.5 rounded-xl shadow-lg flex items-center gap-3 text-xs font-semibold toast-enter`;
@@ -79,31 +79,31 @@ window.showToast = function(message, isError = false) {
     setTimeout(() => { toast.remove(); }, 3000);
 };
 
-window.copyAccount = function() {
+window.copyAccount = function () {
     navigator.clipboard.writeText("1980737568").then(() => window.showToast("คัดลอกเลขบัญชีกองกลางรับโอนสำเร็จ"))
 }
 
-window.calculateSplit = function() {
+window.calculateSplit = function () {
     const rem = parseFloat(document.getElementById('totalRemaining').innerText.replace(/,/g, '')) || 0;
     let count = parseInt(document.getElementById('splitCount').value) || 1;
     if (count < 1) count = 1;
-    document.getElementById('splitResult').innerText = (rem / count).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    document.getElementById('splitResult').innerText = (rem / count).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
 
-window.toggleAdminPassword = function(btn) {
+window.toggleAdminPassword = function (btn) {
     const textEl = document.getElementById('admin-pass-text');
     if (!textEl) return;
-    
+
     if (textEl.innerText === 'zazoza1234') {
         textEl.innerText = '••••••••';
         btn.innerText = 'แสดงรหัส';
         window.showToast("ซ่อนรหัสผ่านเรียบร้อย");
         return;
     }
-    
+
     const pin = prompt("🔐 กรุณากรอกรหัส PIN ของทีมงานเพื่อดูรหัสผ่านเบื้องหลัง:");
     const user = verifyAuthority(pin);
-    
+
     if (user) {
         textEl.innerText = 'zazoza1234';
         btn.innerText = 'ซ่อนรหัส';
@@ -130,7 +130,7 @@ async function syncLatestCommit() {
     const el = document.getElementById('github-commit-info');
     if (!el) return;
     try {
-        const res = await fetch('https://api.github.com/repos/puripong1st/Project/commits?per_page=1');
+        const res = await fetch('https://api.github.com/repos/puripong1st/SmartAccess-Projects/commits?per_page=1');
         if (!res.ok) throw new Error('Repository Not Found or Rate Limited');
         const data = await res.json();
         if (data && data[0]) {
@@ -138,9 +138,9 @@ async function syncLatestCommit() {
             const message = commitObj.commit.message;
             const author = commitObj.commit.author.name;
             const dateStr = commitObj.commit.author.date;
-            const formattedDate = new Date(dateStr).toLocaleString('th-TH', { 
-                year: 'numeric', month: 'short', day: 'numeric', 
-                hour: '2-digit', minute: '2-digit' 
+            const formattedDate = new Date(dateStr).toLocaleString('th-TH', {
+                year: 'numeric', month: 'short', day: 'numeric',
+                hour: '2-digit', minute: '2-digit'
             });
             el.innerHTML = `
                 <div class="flex flex-col items-start sm:items-end text-left sm:text-right">
@@ -160,35 +160,35 @@ async function syncLatestCommit() {
 async function syncManualLastUpdated() {
     const el = document.getElementById('manual-last-updated');
     if (!el) return;
-    
+
     el.innerHTML = `<span class="animate-pulse text-[9px] text-slate-400 font-medium">⏳ กำลังซิงค์ข้อมูลอัปเดต...</span>`;
-    
+
     try {
         // เรียก API route ของตัวเอง (same-origin, ไม่มี CORS)
         const res = await fetch('/api/sync-manual');
         if (!res.ok) throw new Error(`Server error ${res.status}`);
-        
+
         const data = await res.json();
-        
+
         if (data.synced && data.lastUpdated) {
             const rawDate = data.lastUpdated; // "2026-06-01 13:54:00"
             const dateObj = new Date(rawDate.replace(' ', 'T') + '+07:00');
-            
+
             const formattedDate = dateObj.toLocaleString('th-TH', {
                 year: 'numeric', month: 'short', day: 'numeric',
                 hour: '2-digit', minute: '2-digit'
             });
-            
+
             // คำนวณความเก่าของอัปเดต
             const now = new Date();
             const diffMs = now - dateObj;
             const diffHours = diffMs / (1000 * 60 * 60);
             const diffDays = diffHours / 24;
-            
+
             let freshnessColor = 'text-slate-500 bg-slate-100 border-slate-200';
             let freshnessIcon = '📄';
             let freshnessLabel = '';
-            
+
             if (diffHours < 24) {
                 freshnessColor = 'text-emerald-700 bg-emerald-50 border-emerald-200';
                 freshnessIcon = '🟢';
@@ -202,7 +202,7 @@ async function syncManualLastUpdated() {
                 freshnessIcon = '📄';
                 freshnessLabel = `${Math.floor(diffDays)} วันที่แล้ว`;
             }
-            
+
             el.innerHTML = `
                 <div class="flex flex-col gap-1">
                     <span class="inline-flex items-center gap-1 text-[9px] font-bold px-2 py-0.5 rounded-md border ${freshnessColor}">
@@ -222,12 +222,12 @@ async function syncManualLastUpdated() {
 // คอยดักจับสัญญานข้อมูลจาก Cloud Database
 onValue(rootRef, (snapshot) => {
     const val = snapshot.val() || {};
-    
+
     // ประมวลผลกลุ่มวัสดุจัดซื้อ
     if (val.products) {
         products = Array.isArray(val.products) ? val.products : Object.values(val.products);
-    } else { 
-        products = []; 
+    } else {
+        products = [];
     }
 
     // ประมวลผลกลุ่ม Tasks ติดตามความก้าวหน้า
@@ -270,7 +270,7 @@ function calculateProgressMetrics() {
 // ==========================================
 // HARDWARE BASKET MANAGER
 // ==========================================
-window.saveProduct = function() {
+window.saveProduct = function () {
     const name = document.getElementById('newName').value.trim();
     const price = parseFloat(document.getElementById('newPrice').value);
     const qty = parseInt(document.getElementById('newQty').value) || 1;
@@ -286,7 +286,7 @@ window.saveProduct = function() {
             products[index] = { id: editingId, name, price, qty, link, status: currentStatus };
             if (image) products[index].fixedImage = image;
             else delete products[index].fixedImage;
-            
+
             set(ref(db, 'hardwareProject/products'), products);
             triggerDiscordWebhook("📝 แก้ไขข้อมูลคุณสมบัติพัสดุอุปกรณ์", `รายการ: ${name}\nปรับปรุงรายละเอียดเสร็จสิ้น`, 16753920);
             window.showToast("อัปเดตข้อมูลอุปกรณ์พัสดุเรียบร้อย");
@@ -296,16 +296,16 @@ window.saveProduct = function() {
         const newP = { id: Date.now(), name, price, qty, link, status: 'pending' };
         if (image) newP.fixedImage = image;
         let updatedList = [...products]; updatedList.push(newP);
-        
+
         set(ref(db, 'hardwareProject/products'), updatedList);
-        triggerDiscordWebhook("🛒 เพิ่มรายการวัสดุเข้าคลังพัสดุใหม่", `รายการ: ${name}\nประเมินงบ: ฿${(price*qty).toLocaleString()}`, 2664269);
-        
+        triggerDiscordWebhook("🛒 เพิ่มรายการวัสดุเข้าคลังพัสดุใหม่", `รายการ: ${name}\nประเมินงบ: ฿${(price * qty).toLocaleString()}`, 2664269);
+
         document.getElementById('newName').value = ''; document.getElementById('newPrice').value = ''; document.getElementById('newQty').value = '1'; document.getElementById('newLink').value = ''; document.getElementById('newImage').value = '';
         window.showToast("บันทึกข้อมูลอุปกรณ์พัสดุเรียบร้อย");
     }
 };
 
-window.editProduct = function(id) {
+window.editProduct = function (id) {
     const product = products.find(p => p.id === id);
     if (!product) return;
 
@@ -324,23 +324,23 @@ window.editProduct = function(id) {
     window.scrollTo({ top: 0, behavior: 'smooth' });
 };
 
-window.cancelEdit = function() {
+window.cancelEdit = function () {
     editingId = null;
     document.getElementById('formTitle').innerText = "ลงทะเบียนจัดซื้ออุปกรณ์พัสดุ";
     document.getElementById('saveBtn').innerText = "บันทึกพัสดุ";
     document.getElementById('saveBtn').className = "bg-slate-900 hover:bg-slate-800 text-white font-bold py-2 px-4 rounded-xl text-xs transition-all";
     document.getElementById('cancelEditBtn').classList.add('hidden');
-    
-    document.getElementById('newName').value = ''; 
-    document.getElementById('newPrice').value = ''; 
-    document.getElementById('newQty').value = '1'; 
-    document.getElementById('newLink').value = ''; 
+
+    document.getElementById('newName').value = '';
+    document.getElementById('newPrice').value = '';
+    document.getElementById('newQty').value = '1';
+    document.getElementById('newLink').value = '';
     document.getElementById('newImage').value = '';
 };
 
-window.updateProductStatus = function(id, nextStatus) {
+window.updateProductStatus = function (id, nextStatus) {
     const pin = prompt("🔐 ป้อนรหัสสิทธิ์ของคุณ เพื่ออัปเดตสถานะจัดซื้อพัสดุวัตถุนี้:");
-    const user = verifyAuthority(pin); 
+    const user = verifyAuthority(pin);
     if (!user) { window.showToast("รหัสตรวจสอบผิดพลาด การจัดสิทธิ์ล้มเหลว", true); return; }
 
     const updated = products.map(p => {
@@ -351,9 +351,9 @@ window.updateProductStatus = function(id, nextStatus) {
     triggerDiscordWebhook("🔄 ปรับปรุงสถานะสิทธิ์คลังจัดซื้อ", `ผู้ดำเนินการ: ${user.name}\nปรับเปลี่ยนสถานะจัดซื้อเรียบร้อย`, 16753920);
 };
 
-window.deleteProduct = function(id) {
+window.deleteProduct = function (id) {
     const pin = prompt("🚨 กรุณายืนยันรหัสพินส่วนกลาง (รหัสภูริพงศ์) เพื่อลบอุปกรณ์ถาวร:");
-    const user = verifyAuthority(pin, 'admin'); 
+    const user = verifyAuthority(pin, 'admin');
     if (!user) { window.showToast("สิทธิ์การเข้าถึงเพื่อถอดถอนไอเทมถูกปฏิเสธ", true); return; }
 
     const updated = products.filter(p => p.id !== id);
@@ -365,7 +365,7 @@ function renderHardwareList() {
     const listEl = document.getElementById('productList');
     if (!listEl) return;
     listEl.innerHTML = '';
-    
+
     let budget = 0; let bought = 0; let remaining = 0;
 
     products.forEach(p => {
@@ -374,25 +374,25 @@ function renderHardwareList() {
         if (p.status === 'bought') bought += sum;
         else if (p.status === 'pending') remaining += sum;
 
-        let cardBg = 'bg-white border-slate-200'; 
-        let overlay = 'hidden'; 
+        let cardBg = 'bg-white border-slate-200';
+        let overlay = 'hidden';
         let sliderPos = 'translate-x-0';
         let badgeHtml = '';
 
-        if (p.status === 'bought') { 
-            cardBg = 'bg-slate-50 border-emerald-500/20 opacity-95'; 
-            overlay = 'bg-emerald-500/5 border-emerald-500'; 
-            sliderPos = 'translate-x-[200%]'; 
+        if (p.status === 'bought') {
+            cardBg = 'bg-slate-50 border-emerald-500/20 opacity-95';
+            overlay = 'bg-emerald-500/5 border-emerald-500';
+            sliderPos = 'translate-x-[200%]';
             badgeHtml = '<span class="bg-emerald-600 text-white font-bold text-xs px-3 py-1 rounded-xl shadow-sm border border-emerald-500 tracking-wider">ซื้อแล้ว</span>';
-        } else if (p.status === 'hold') { 
-            cardBg = 'bg-slate-50 border-amber-500/20 opacity-90'; 
-            overlay = 'bg-amber-500/5 border-amber-400'; 
-            sliderPos = 'translate-x-[100%]'; 
+        } else if (p.status === 'hold') {
+            cardBg = 'bg-slate-50 border-amber-500/20 opacity-90';
+            overlay = 'bg-amber-500/5 border-amber-400';
+            sliderPos = 'translate-x-[100%]';
             badgeHtml = '<span class="bg-amber-500 text-white font-bold text-xs px-3 py-1 rounded-xl shadow-sm border border-amber-400 tracking-wider">รอก่อนค่อยซื้อ</span>';
         } else {
-            cardBg = 'bg-white border-slate-200'; 
-            overlay = 'bg-rose-500/5 border-rose-400'; 
-            sliderPos = 'translate-x-0'; 
+            cardBg = 'bg-white border-slate-200';
+            overlay = 'bg-rose-500/5 border-rose-400';
+            sliderPos = 'translate-x-0';
             badgeHtml = '<span class="bg-rose-600 text-white font-bold text-xs px-3 py-1 rounded-xl shadow-sm border border-rose-500 tracking-wider">ยังไม่ซื้อ</span>';
         }
 
@@ -443,33 +443,33 @@ function renderHardwareList() {
 
 async function fetchImagesDynamically() {
     if (imageFetchController) imageFetchController.abort();
-    imageFetchController = new AbortController(); 
+    imageFetchController = new AbortController();
     const { signal } = imageFetchController;
 
     if (products.length === 0) return;
     for (const p of products) {
         if (signal.aborted) return;
-        const imgEl = document.getElementById(`img-${p.id}`); 
+        const imgEl = document.getElementById(`img-${p.id}`);
         const loadEl = document.getElementById(`loading-${p.id}`);
         if (!imgEl || !loadEl) continue;
 
         if (p.fixedImage) {
             imgEl.src = p.fixedImage;
             imgEl.onload = () => { loadEl?.classList.add('hidden'); imgEl?.classList.remove('hidden'); };
-            continue; 
+            continue;
         }
 
         if (p.link && p.link !== "#") {
             try {
-                const res = await fetch(`https://api.microlink.io?url=${encodeURIComponent(p.link)}`, { signal }); 
+                const res = await fetch(`https://api.microlink.io?url=${encodeURIComponent(p.link)}`, { signal });
                 const d = await res.json();
                 imgEl.src = (d.status === 'success' && d.data.image?.url) ? d.data.image.url : `https://placehold.co/400x300/f1f5f9/64748b?text=No+Image`;
-            } catch (e) { 
-                if (e.name === 'AbortError') return; 
-                imgEl.src = `https://placehold.co/400x300/fee2e2/ef4444?text=Error`; 
+            } catch (e) {
+                if (e.name === 'AbortError') return;
+                imgEl.src = `https://placehold.co/400x300/fee2e2/ef4444?text=Error`;
             }
-        } else { 
-            imgEl.src = `https://placehold.co/400x300/f1f5f9/64748b?text=No+Link`; 
+        } else {
+            imgEl.src = `https://placehold.co/400x300/f1f5f9/64748b?text=No+Link`;
         }
         imgEl.onload = () => { loadEl?.classList.add('hidden'); imgEl?.classList.remove('hidden'); };
         await new Promise(r => setTimeout(r, 100));
@@ -479,7 +479,7 @@ async function fetchImagesDynamically() {
 // ==========================================
 // TASK MANAGEMENT WORKSPACE
 // ==========================================
-window.saveTask = function() {
+window.saveTask = function () {
     const cat = document.getElementById('taskCategory').value;
     const title = document.getElementById('taskTitle').value.trim();
 
@@ -487,7 +487,7 @@ window.saveTask = function() {
 
     const asigneeMap = { "web": "ฟิล์ม", "board": "เฮง", "document": "ไอซ์" };
     const newT = { id: 'tk-' + Date.now(), title, assignee: asigneeMap[cat], status: 'pending' };
-    
+
     taskData[cat].push(newT);
     set(ref(db, 'hardwareProject/tasks'), taskData);
 
@@ -496,14 +496,14 @@ window.saveTask = function() {
     window.showToast("ออกคำสั่งจ่ายงานกระจายเข้าบอร์ดสำเร็จ");
 };
 
-window.updateTaskStatus = function(category, taskId, nextStatus) {
+window.updateTaskStatus = function (category, taskId, nextStatus) {
     const pin = prompt(`🔐 ป้อนรหัส PIN ตนเอง เพื่อเซ็นรับรองสถานะงานชิ้นนี้:`);
-    const user = verifyAuthority(pin, category); 
-    
-    if (!user) { 
-        window.showToast("สิทธิ์ปฏิเสธการเข้าถึง รหัสไม่ถูกต้องหรือคุณไม่ได้คุมงานสายนี้", true); 
-        renderWorkspaceBoard(); 
-        return; 
+    const user = verifyAuthority(pin, category);
+
+    if (!user) {
+        window.showToast("สิทธิ์ปฏิเสธการเข้าถึง รหัสไม่ถูกต้องหรือคุณไม่ได้คุมงานสายนี้", true);
+        renderWorkspaceBoard();
+        return;
     }
 
     const list = taskData[category] || [];
@@ -511,17 +511,17 @@ window.updateTaskStatus = function(category, taskId, nextStatus) {
     if (idx !== -1) {
         list[idx].status = nextStatus;
         set(ref(db, 'hardwareProject/tasks'), taskData);
-        
+
         const labelState = nextStatus === 'done' ? 'สำเร็จเรียบร้อย' : nextStatus === 'doing' ? 'เริ่มดำเนินการแล้ว' : 'รอจัดทำ';
         triggerDiscordWebhook("🔄 เซ็นตรวจรับสถานะเนื้องานโปรเจกต์", `**ผู้ลงนาม:** ${user.name}\n**เนื้องาน:** ${list[idx].title}\n**ผลอัปเดต:** ${labelState}`, 3447003);
         window.showToast(`รับรองอัปเดตงานโดยคุณ: ${user.name}`);
     }
 };
 
-window.deleteTask = function(category, taskId) {
+window.deleteTask = function (category, taskId) {
     const pin = prompt("🚨 ต้องยืนยันสิทธิ์ของใครคนใดคนหนึ่งในทีมด้วยรหัสพินเพื่อทำการลบภาระงานนี้:");
-    const user = verifyAuthority(pin); 
-    
+    const user = verifyAuthority(pin);
+
     if (!user) { window.showToast("รหัสรักษาความปลอดภัยไม่ถูกต้อง", true); return; }
 
     taskData[category] = (taskData[category] || []).filter(t => t.id !== taskId);
@@ -547,17 +547,17 @@ function renderWorkspaceBoard() {
 
         taskList.forEach(t => {
             const block = document.createElement('div');
-            let cardStyle = 'bg-white border-slate-200/80 shadow-3xs'; 
+            let cardStyle = 'bg-white border-slate-200/80 shadow-3xs';
             let badgeStyle = 'bg-slate-100 text-slate-600 border border-slate-200/60';
             let badgeText = '⏳ ต่อคิว';
-            
-            if (t.status === 'doing') { 
-                cardStyle = 'bg-gradient-to-br from-amber-50/20 to-white border-amber-300/80 shadow-2xs ring-1 ring-amber-400/10'; 
-                badgeStyle = 'bg-amber-50 text-amber-700 border border-amber-200/50'; 
+
+            if (t.status === 'doing') {
+                cardStyle = 'bg-gradient-to-br from-amber-50/20 to-white border-amber-300/80 shadow-2xs ring-1 ring-amber-400/10';
+                badgeStyle = 'bg-amber-50 text-amber-700 border border-amber-200/50';
                 badgeText = '⚡ ลุยงาน';
-            } else if (t.status === 'done') { 
-                cardStyle = 'bg-gradient-to-br from-emerald-50/10 to-white border-emerald-200/60 opacity-90 shadow-3xs'; 
-                badgeStyle = 'bg-emerald-50 text-emerald-700 border border-emerald-200/50'; 
+            } else if (t.status === 'done') {
+                cardStyle = 'bg-gradient-to-br from-emerald-50/10 to-white border-emerald-200/60 opacity-90 shadow-3xs';
+                badgeStyle = 'bg-emerald-50 text-emerald-700 border border-emerald-200/50';
                 badgeText = '✅ สำเร็จ';
             }
 
