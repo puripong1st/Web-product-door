@@ -3,13 +3,13 @@ export default async function handler(req, res) {
     res.setHeader('Cache-Control', 's-maxage=300, stale-while-revalidate=600');
 
     try {
-        const manualUrl = 'https://project-sigma-ivory-21.vercel.app/complete_system_manual_th.html';
+        const manualUrl = 'https://smartaccess-project.vercel.app/complete_system_manual_th.html';
         const response = await fetch(manualUrl);
 
         if (!response.ok) {
-            return res.status(502).json({ 
-                synced: false, 
-                error: `Manual page returned ${response.status}` 
+            return res.status(502).json({
+                synced: false,
+                error: `Manual page returned ${response.status}`
             });
         }
 

@@ -8,7 +8,7 @@ function apiProxyPlugin() {
       server.middlewares.use('/api/sync-manual', async (req, res) => {
         res.setHeader('Content-Type', 'application/json');
         try {
-          const manualUrl = 'https://project-sigma-ivory-21.vercel.app/complete_system_manual_th.html';
+          const manualUrl = 'https://smartaccess-project.vercel.app/complete_system_manual_th.html';
           const response = await fetch(manualUrl);
           if (!response.ok) {
             res.statusCode = 502;
